@@ -1,16 +1,40 @@
 "use client"
 
 import Image from 'next/image'
-import { useState } from 'react'
-import styles from '@/styles/Main.module.css'
+import { useState, useEffect, useRef } from 'react'
+import styles from '@/app/styles/Main.module.css'
 
 export default function Main() {
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
-  
+  const featureRef = useRef(null);  // featureSection ref
+  const infoRef = useRef(null);  // infoSection ref
+  const [featureInView, setFeatureInView] = useState(false);
+  const [infoInView, setInfoInView] = useState(false);
+
   const toggleAccordion = (id: string) => {
     setOpenAccordion(openAccordion === id ? null : id);
   };
-  
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.target === featureRef.current) {
+          setFeatureInView(entry.isIntersecting);
+        }
+        if (entry.target === infoRef.current) {
+          setInfoInView(entry.isIntersecting);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    if (featureRef.current) observer.observe(featureRef.current);
+    if (infoRef.current) observer.observe(infoRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <main className={styles.main}>
       <section className={styles.hero}>
@@ -19,12 +43,15 @@ export default function Main() {
               src="/images/Main_Introduce.png" 
               alt="Contract Document" 
               width={1920} 
-              height={95} 
+              height={95}
           />
         </div>
       </section>
 
-      <section className={styles.featureSection}>
+      <section 
+        className={`${styles.featureSection} ${featureInView ? styles.visible : ''}`} 
+        ref={featureRef}
+      >
         <div className={styles.featureContent}>
           <div className={styles.featureText}>
             <h2 className={styles.featureTitle}>
@@ -48,7 +75,10 @@ export default function Main() {
         </div>
       </section>
 
-      <section className={styles.infoSection}>
+      <section 
+        className={`${styles.infoSection} ${infoInView ? styles.visible : ''}`} 
+        ref={infoRef}
+      >
         <div className={styles.infoContainer}>
           <div className={styles.dashboardImage}>
             <Image 
@@ -77,7 +107,6 @@ export default function Main() {
                   </div>
                 )}
               </div>
-              
               <div 
                 className={`${styles.accordionItem} ${openAccordion === 'risk' ? styles.open : ''}`}
                 onClick={() => toggleAccordion('risk')}
@@ -93,7 +122,6 @@ export default function Main() {
                   </div>
                 )}
               </div>
-              
               <div 
                 className={`${styles.accordionItem} ${openAccordion === 'compare' ? styles.open : ''}`}
                 onClick={() => toggleAccordion('compare')}
@@ -109,7 +137,6 @@ export default function Main() {
                   </div>
                 )}
               </div>
-              
               <div 
                 className={`${styles.accordionItem} ${openAccordion === 'download' ? styles.open : ''}`}
                 onClick={() => toggleAccordion('download')}

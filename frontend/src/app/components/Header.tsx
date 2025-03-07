@@ -1,7 +1,8 @@
 "use client"
 
 import Image from 'next/image'
-import styles from '@/styles/Header.module.css'
+import styles from '@/app/styles/Header.module.css'
+import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -11,7 +12,9 @@ export default function Header() {
       </div>
       <nav className={styles.nav}>
         <ul>
-          <li><a href="#">계약서 분석</a></li>
+          <li>
+            <Link href='/analysis'>계약서 분석</Link>
+          </li>
           <li><a href="#">계약 법률 설명</a></li>
           <li><a href="#">FAQ</a></li>
         </ul>
