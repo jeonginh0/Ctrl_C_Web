@@ -8,7 +8,9 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
-        <Image src="/images/CTRL_C_Logo.png" alt="CTRL+C Logo" width={105} height={57} />
+        <Link href="/">
+          <Image src="/images/CTRL_C_Logo.png" alt="CTRL+C Logo" width={105} height={57} />
+        </Link>
       </div>
       <nav className={styles.nav}>
         <ul>

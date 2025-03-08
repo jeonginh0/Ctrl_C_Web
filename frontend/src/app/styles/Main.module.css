@@ -19,7 +19,7 @@ body, html {
     color: white;
     padding: 0;
     min-height: calc(120px - 80px);
-    padding-top: 80px;
+    padding-top: 90px;
     width: 100%;
     height: auto;
     display: flex;
