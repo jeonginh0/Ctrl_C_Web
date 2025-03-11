@@ -107,10 +107,20 @@ body, html {
     background-color: #e02424;
 }
 
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
 .featureImage {
     flex: 1;
     display: flex;
     justify-content: center;
+    animation: bounce 1.5s infinite ease-in-out;
 }
 
 .infoSection {
@@ -127,6 +137,7 @@ body, html {
 
 .dashboardImage {
     flex: 1;
+    animation: bounce 1.5s infinite ease-in-out;
 }
 
 .serviceInfo {

@@ -3,7 +3,7 @@ import Footer from '@/app/components/Footer'
 import styles from '@/app/styles/Home.module.css'
 import Head from 'next/head';
 
-export default function Analysis() {
+export default function Login() {
     return (
         <div>
             <Head>

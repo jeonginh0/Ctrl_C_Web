@@ -4,8 +4,11 @@ import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import styles from '@/app/styles/Main.module.css'
 
+import UpIcon from "../../../public/images/upICON.svg";   // 위쪽 화살표 SVG
+import DownIcon from "../../../public/images/downICON.svg"; // 아래쪽 화살표 SVG
+
 export default function Main() {
-  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [openAccordion, setOpenAccordion] = useState<string | null>('summary');
   const featureRef = useRef(null);  // featureSection ref
   const infoRef = useRef(null);  // infoSection ref
   const [featureInView, setFeatureInView] = useState(false);
@@ -40,7 +43,7 @@ export default function Main() {
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <Image 
-              src="/images/Main_Introduce.png" 
+              src="/images/Sub_Header.png" 
               alt="Contract Document" 
               width={1920} 
               height={95}
@@ -82,7 +85,7 @@ export default function Main() {
         <div className={styles.infoContainer}>
           <div className={styles.dashboardImage}>
             <Image 
-              src="/images/Main_Image2.png" 
+              src="/images/talk.png" 
               alt="Dashboard" 
               width={600} 
               height={600} 
@@ -99,7 +102,12 @@ export default function Main() {
                 <div className={styles.accordionHeader}>
                   <Image src="/images/Main_service1.png" alt="Document Icon" width={39} height={39} />
                   <h3>계약서 요약 및 정리</h3>
-                  <span className={styles.accordionArrow}>{openAccordion === 'summary' ? '▲' : '▼'}</span>
+                  <Image 
+                    src={openAccordion === "summary" ? UpIcon : DownIcon} 
+                    alt="Accordion Icon"
+                    width={20} 
+                    height={20} 
+                  />
                 </div>
                 {openAccordion === 'summary' && (
                   <div className={styles.accordionContent}>
@@ -114,7 +122,12 @@ export default function Main() {
                 <div className={styles.accordionHeader}>
                   <Image src="/images/Main_service2.png" alt="Risk Icon" width={39} height={39} />
                   <h3>위험요소·누락요소 검토</h3>
-                  <span className={styles.accordionArrow}>{openAccordion === 'risk' ? '▲' : '▼'}</span>
+                  <Image 
+                    src={openAccordion === "risk" ? UpIcon : DownIcon} 
+                    alt="Accordion Icon"
+                    width={20} 
+                    height={20} 
+                  />
                 </div>
                 {openAccordion === 'risk' && (
                   <div className={styles.accordionContent}>
@@ -128,12 +141,17 @@ export default function Main() {
               >
                 <div className={styles.accordionHeader}>
                   <Image src="/images/Main_service3.png" alt="Compare Icon" width={39} height={39} />
-                  <h3>위험도 평가</h3>
-                  <span className={styles.accordionArrow}>{openAccordion === 'compare' ? '▲' : '▼'}</span>
+                  <h3>AI 챗봇 상담</h3>
+                  <Image 
+                    src={openAccordion === "compare" ? UpIcon : DownIcon} 
+                    alt="Accordion Icon"
+                    width={20} 
+                    height={20} 
+                  />
                 </div>
                 {openAccordion === 'compare' && (
                   <div className={styles.accordionContent}>
-                    <p>계약서의 각 항목별 위험도를 측정하여 그래프로 나타냅니다.</p>
+                    <p>부동산 계약과 관련된 궁금한 점을 AI 챗봇에게 질문하고 답변을 받을 수 있습니다.</p>
                   </div>
                 )}
               </div>
@@ -144,7 +162,12 @@ export default function Main() {
                 <div className={styles.accordionHeader}>
                   <Image src="/images/Main_service4.png" alt="Download Icon" width={39} height={39} />
                   <h3>분석 결과 다운로드</h3>
-                  <span className={styles.accordionArrow}>{openAccordion === 'download' ? '▲' : '▼'}</span>
+                  <Image 
+                    src={openAccordion === "download" ? UpIcon : DownIcon} 
+                    alt="Accordion Icon"
+                    width={20} 
+                    height={20} 
+                  />
                 </div>
                 {openAccordion === 'download' && (
                   <div className={styles.accordionContent}>

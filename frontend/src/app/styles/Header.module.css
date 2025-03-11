@@ -45,6 +45,36 @@
     color: #4a154b;
 }
 
+.active {
+    color: #CD0000 !important;
+    font-weight: bold;
+}
+
+.loginButton {
+    margin-left: auto;  /* 오른쪽 끝 정렬 */
+    background-color: transparent;
+    color: #f05252;
+    border: 1px solid #f05252;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;  /* 세로 정렬 */
+}
+
+.loginButton a {
+    text-decoration: none;
+    color: #f05252;
+    font-weight: 800;
+    font-size: 17px;
+    transition: color 0.2s;
+}
+
+.loginButton:hover {
+    background-color: rgba(250, 143, 128, 0.05);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav ul {

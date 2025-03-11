@@ -5,7 +5,7 @@ import styles from '@/app/styles/Analysis.module.css';
 import Head from 'next/head';
 import Image from 'next/image';
 
-export default function Analysis() {
+export default function AnalysisMain() {
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<{ type: 'image' | 'pdf'; url: string } | null>(null);
     const [uploading, setUploading] = useState(false);
@@ -106,7 +106,7 @@ export default function Analysis() {
             </Head>
             <div className={styles.logo}>
                 <Image 
-                    src="/images/Main_Introduce.png" 
+                    src="/images/Sub_Header.png" 
                     alt="Contract Document" 
                     width={1920} 
                     height={95}
@@ -118,7 +118,7 @@ export default function Analysis() {
                     <h1 className={styles.title}>분석할 계약서를 업로드 하세요</h1>
                     <p className={styles.description}>PDF, JPG, PNG, JPEG 등 다양한 확장자 업로드 가능</p>
                     <button type="button" className={styles.browseButton} onClick={(e) => { e.stopPropagation(); triggerFileInput(); }}>
-                        파일 선택
+                        파일 업로드
                     </button>
                 </div>
 

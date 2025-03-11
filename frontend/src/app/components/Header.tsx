@@ -3,8 +3,11 @@
 import Image from 'next/image'
 import styles from '@/app/styles/Header.module.css'
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
+  const pathname = usePathname();
+
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
@@ -15,12 +18,34 @@ export default function Header() {
       <nav className={styles.nav}>
         <ul>
           <li>
-            <Link href='/analysis'>계약서 분석</Link>
+            <Link 
+              href='/analysis'
+              className={pathname === '/analysis' ? styles.active : ''}
+            >
+              계약서 분석
+            </Link>
           </li>
-          <li><a href="#">계약 법률 설명</a></li>
-          <li><a href="#">FAQ</a></li>
+          <li>
+            <Link 
+              href="/description"
+              className={pathname === '/description' ? styles.active : ''}
+            >
+              계약 법률 설명
+            </Link>
+          </li>
+          <li>
+            <Link 
+              href="/faq"
+              className={pathname === '/faq' ? styles.active : ''}
+            >
+              FAQ
+            </Link>
+          </li>
         </ul>
       </nav>
+      <div className={styles.loginButton}>
+        <Link href="/login">로그인</Link>
+      </div>
     </header>
   );
 }
