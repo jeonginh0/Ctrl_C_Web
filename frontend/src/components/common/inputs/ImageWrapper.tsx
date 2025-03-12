@@ -7,10 +7,18 @@ type ImageWrapperProps = {
   width: number;
   height: number;
   className?: string;
+  onClick?: (e: React.MouseEvent<HTMLImageElement>) => void;
 };
 
-const ImageWrapper: React.FC<ImageWrapperProps> = ({ src, alt, width, height, className = "" }) => {
-  return <Image src={src} alt={alt} width={width} height={height} className={className} />;
+const ImageWrapper: React.FC<ImageWrapperProps> = ({
+  src,
+  alt,
+  width,
+  height,
+  className = "",
+  onClick,
+}) => {
+  return <Image src={src} alt={alt} width={width} height={height} className={className} onClick={onClick} />; // onClick 전달
 };
 
 export default ImageWrapper;

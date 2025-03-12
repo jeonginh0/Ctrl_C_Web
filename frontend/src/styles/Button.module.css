@@ -74,6 +74,35 @@
     cursor: not-allowed;
 }
 
+.loginClickButton {
+    margin-top: 15px;
+    margin-bottom: 30px;
+    width: 100%;
+    padding: 10px;
+    background: #ED6466;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.loginClickButton:hover {
+    background: #000000;
+}
+
+.sendAuthButton {
+    background-color: #008CBA; 
+    font-size: 12px;
+    padding: 8px 16px;
+    margin-left: 10px;
+}
+  
+.sendAuthButton:hover {
+    background-color: #007B9E;
+}
+
 @media (max-width: 1024px) {
     .button {
         padding: 0.75rem 2rem;

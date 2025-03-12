@@ -3,19 +3,27 @@ import styles from "@/styles/Button.module.css";
 
 type ButtonProps = {
   children: React.ReactNode;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; // 이벤트 객체를 받도록 수정
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
-  disabled?: boolean; // disabled 속성 추가
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset"; // Add type prop with default value 'button'
 };
 
-const Button: React.FC<ButtonProps> = ({ children, onClick, className = "", disabled = false }) => {
+const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  className = "",
+  disabled = false,
+  type = "button", // Default to 'button' type
+}) => {
   return (
     <button
+      type={type} // Apply the type prop to the button element
       className={`${styles.button} ${className}`}
       onClick={(e) => {
-        if (onClick) onClick(e); // 이벤트 객체를 전달하여 onClick 처리
+        if (onClick) onClick(e);
       }}
-      disabled={disabled} // disabled 속성 적용
+      disabled={disabled}
     >
       {children}
     </button>
