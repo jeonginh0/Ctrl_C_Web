@@ -1,0 +1,89 @@
+.button {
+    background-color: #f05252;
+    color: white;
+    border: none;
+    padding: 0.75rem 3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #e02424;
+}
+
+.loginButton {
+    margin-left: auto;  
+    background-color: transparent;
+    color: #f05252;
+    border: 1px solid #f05252;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.loginButton a {
+    text-decoration: none;
+    color: #f05252;
+    font-weight: 800;
+    font-size: 17px;
+    transition: color 0.2s;
+}
+
+.loginButton:hover {
+    background-color: rgba(250, 143, 128, 0.05);
+}
+
+.browseButton {
+    background-color: transparent;
+    color: #f05252;
+    border: 1px solid #f05252;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.browseButton:hover {
+    background-color: rgba(250, 143, 128, 0.05);
+}
+
+.uploadButton {
+    background-color: #f05252;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.uploadButton:hover {
+    background-color: #f78686;
+}
+
+.uploadButton:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+    .button {
+        padding: 0.75rem 2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .button {
+        padding: 0.75rem 2rem;
+        font-size: 0.9rem;
+    }
+}
