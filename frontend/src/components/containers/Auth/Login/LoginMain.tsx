@@ -5,6 +5,7 @@ import Button from "@/components/common/inputs/Button";
 import buttons from "@/styles/Button.module.css";
 import React from "react";
 import ImageWrapper from "@/components/common/inputs/ImageWrapper";
+import Link from "next/link";
 
 export default function LoginMain() {
     const [email, setEmail] = useState("");
@@ -46,34 +47,34 @@ export default function LoginMain() {
                 </p>
                 <p className={styles.description}>
                     신규 사용자이신가요?{" "}
-                    <a href="/signup" className={styles.link}>계정 만들기</a>
+                    <Link href="/signup" className={styles.link}>계정 만들기</Link>
                 </p>
                 <form onSubmit={handleLogin}>
-                <div className={styles.inputGroup}>
-                    <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={styles.input}
-                    placeholder="이메일"
-                    required
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <input
-                    type={passwordVisible ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={styles.input}
-                    placeholder="비밀번호"
-                    required
-                    />
-                    <ImageWrapper src="/icons/EyeIcon.svg" alt="Eye Icon" className={styles.eyeIcon} onClick={() => setPasswordVisible(!passwordVisible)} width={40} height={40} />
-                </div>
-                <Button type="submit" className={buttons.loginClickButton}>로그인</Button>
+                    <div className={styles.inputGroup}>
+                        <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={styles.input}
+                        placeholder="이메일"
+                        required
+                        />
+                    </div>
+                    <div className={styles.inputGroup}>
+                        <input
+                        type={passwordVisible ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={styles.input}
+                        placeholder="비밀번호"
+                        required
+                        />
+                        <ImageWrapper src="/icons/EyeIcon.svg" alt="Eye Icon" className={styles.eyeIcon} onClick={() => setPasswordVisible(!passwordVisible)} width={40} height={40} />
+                    </div>
+                    <Button type="submit" className={buttons.loginClickButton}>로그인</Button>
                 </form>
                 <div className={styles.linkContainer}>
-                <a href="/find-email" className={styles.findlink}>이메일 찾기</a> | <a href="/find-password" className={styles.findlink}>비밀번호 찾기</a>
+                <Link href="/find-password" className={styles.findlink}>비밀번호 찾기</Link>
                 </div>
             </div>
         </div>

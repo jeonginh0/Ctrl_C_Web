@@ -109,14 +109,14 @@ interface FormData {
                 <h2 className={styles.title}>회원가입</h2>
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <div className={styles.formGroup}>
-                        <label htmlFor="username">닉네임*</label>
+                        <label htmlFor="username">이름*</label>
                         <input
                             type="text"
                             id="username"
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            placeholder="닉네임 입력"
+                            placeholder="예) 정컨씨"
                             className={errors.username ? styles.inputError : ''}
                         />
                         {errors.username && <p className={styles.errorText}>{errors.username}</p>}
