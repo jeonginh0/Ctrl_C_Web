@@ -54,7 +54,7 @@
     border-color: #e74c3c !important;
 }
   
-input:focus {
+.formGroup input:focus {
     outline: none;
 }
 
