@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -38,19 +40,24 @@ export class AuthService {
 
   async generateAndSendVerificationCode(email: string): Promise<void> {
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    this.emailVerificationCodes.delete(email);
     this.emailVerificationCodes.set(email, verificationCode);
 
     await this.sendVerificationCode(email, verificationCode);
   }
 
-  verifyVerificationCode(email: string, code: string): boolean {
+  // 인증번호 확인
+  verifyVerificationCode(email: string, code: string): { message: string } {
     const storedCode = this.emailVerificationCodes.get(email);
+    
     if (!storedCode || storedCode !== code) {
-      return false;
+      throw new HttpException('잘못된 인증번호입니다.', HttpStatus.BAD_REQUEST);
     }
-    this.emailVerificationCodes.delete(email);
-    this.verifiedEmails.add(email); // 인증된 이메일 저장
-    return true;
+  
+    this.verifiedEmails.add(email);
+  
+    return { message: '인증 코드가 확인되었습니다.' };  // 200 상태 코드는 기본 값
   }
 
   async register(createUserDto: CreateUserDto): Promise<User> {
