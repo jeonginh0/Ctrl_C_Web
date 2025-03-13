@@ -8,8 +8,12 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'frontend', '.next'),
-      serveRoot: '/.next/',
+      rootPath: join(__dirname, '..', '..', 'frontend', 'out'),
+      serveRoot: '/',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'frontend', 'out', '_next'),
+      serveRoot: '/_next/',
     }),
     ConfigModule.forRoot({
       isGlobal: true,
