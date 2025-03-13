@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import SuccessMessage from '@/components/common/messages/SuccessMessage';
 import styles from '@/styles/Signup.module.css';
 
 // 폼 데이터 인터페이스 정의
@@ -31,6 +32,7 @@ const SignupMain = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [verificationSent, setVerificationSent] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // 폼 입력값 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +60,7 @@ const SignupMain = () => {
 
       setVerificationSent(true);
       setErrors({ ...errors, email: undefined });
-      alert('인증 코드가 이메일로 전송되었습니다.');
+      setSuccessMessage('인증 코드가 이메일로 전송되었습니다.');
     } catch (error) {
       alert('인증 코드 전송에 실패했습니다.');
     }
@@ -72,9 +74,9 @@ const SignupMain = () => {
         verificationCode: formData.verificationCode,
       });
 
-      if (response.data.message === '인증 코드가 확인되었습니다.') {
+      if (response.status === 200 || response.status === 201) {
         setIsVerified(true);
-        alert('인증 성공!');
+        setSuccessMessage('인증 성공!');
       } else {
         throw new Error('잘못된 인증번호입니다.');
       }
@@ -128,6 +130,7 @@ const SignupMain = () => {
     <div className={styles.container}>
       <div className={styles.formContainer}>
         <h2 className={styles.title}>회원가입</h2>
+
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="username">이름*</label>
@@ -164,6 +167,9 @@ const SignupMain = () => {
               </button>
             </div>
             {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+            {successMessage && !verificationSent && (
+              <SuccessMessage message={successMessage} />
+            )}
           </div>
 
           {verificationSent && (
@@ -188,6 +194,9 @@ const SignupMain = () => {
               </div>
               {errors.verificationCode && (
                 <p className={styles.errorText}>{errors.verificationCode}</p>
+              )}
+              {successMessage && verificationSent && (
+                <SuccessMessage message={successMessage} />
               )}
             </div>
           )}
