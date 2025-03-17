@@ -11,6 +11,7 @@ export default function LoginMain() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [error, setError] = useState("");
     const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -30,9 +31,13 @@ export default function LoginMain() {
         
             const data = await response.json();
             console.log("로그인 성공", data);
-            router.push("/dashboard");
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            router.push("/");
         } catch (error) {
-            console.error("로그인 오류", error);
+            setError(error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.");
         }
     };
 
