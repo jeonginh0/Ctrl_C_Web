@@ -17,7 +17,7 @@ export default function LoginMain() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:3000/api/login", {
+            const response = await fetch("http://localhost:3000/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -32,8 +32,16 @@ export default function LoginMain() {
             const data = await response.json();
             console.log("로그인 성공", data);
 
+            const userData = {
+                username: data.user.username,
+                role: data.user.role,
+                email: data.user.email,
+                token: data.token,
+                isLogin: !!data.token,
+            };
+
             localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem("user", JSON.stringify(userData));
 
             router.push("/");
         } catch (error) {
