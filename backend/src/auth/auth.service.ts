@@ -99,7 +99,7 @@ export class AuthService {
       }
 
       const payload = { email: user.email, role: user.role };
-      const token = jwt.sign(payload, this.JWT_SECRET);
+      const token = jwt.sign(payload, this.JWT_SECRET, {expiresIn: '12h'});
 
       return { token, user };
     } catch (error) {
