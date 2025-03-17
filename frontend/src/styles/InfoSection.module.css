@@ -1,0 +1,104 @@
+.infoSection {
+    padding: 5rem 5%;
+    background-color: #ffffff;
+}
+
+.infoContainer {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+.serviceInfo {
+    flex: 1;
+    padding-left: 3rem;
+}
+
+.serviceTitle {
+    font-size: 64px;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #111;
+}
+
+.featureSection,
+.infoSection {
+  opacity: 0;
+  transform: translateY(0px);
+  transition: opacity 1s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.featureSection.visible,
+.infoSection.visible {
+  opacity: 1;
+  transform: translateY(0);  /* 화면에 보일 때 원래 위치로 이동 */
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.dashboardImage {
+    flex: 1;
+    animation: bounce 1.5s infinite ease-in-out;
+}
+
+@media (max-width: 1024px) {
+    .featureSection,
+    .infoSection {
+        padding: 3rem 3%;
+    }
+
+    .featureContent,
+    .infoContainer {
+        flex-direction: column;
+    }
+
+    .featureText,
+    .serviceInfo {
+        padding: 0;
+        margin-bottom: 3rem;
+    }
+
+    .serviceTitle {
+        font-size: 3rem;
+    }
+
+    .dashboardImage img {
+        max-width: 90%;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .featureSection,
+    .infoSection {
+        padding: 2rem 2%;
+    }
+
+    .featureContent,
+    .infoContainer {
+        flex-direction: column;
+    }
+
+    .featureText,
+    .serviceInfo {
+        padding: 0;
+        margin-bottom: 3rem;
+    }
+
+    .serviceTitle {
+        font-size: 2.5rem;
+    }
+
+    .dashboardImage img {
+        max-width: 90%;
+        height: auto;
+    }
+}

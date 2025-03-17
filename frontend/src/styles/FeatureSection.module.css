@@ -1,0 +1,142 @@
+.featureSection {
+    padding: 5rem 5%;
+    background-color: white;
+}
+
+.featureContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1170px;
+    margin: 0 auto;
+}
+
+.featureText {
+    flex: 1;
+    padding-right: 3rem;
+}
+
+.featureTitle {
+    font-size: 64px;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.featureDescription {
+    font-size: 24px;
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.featureImage {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    animation: bounce 1.5s infinite ease-in-out;
+}
+
+.featureSection,
+.infoSection {
+  opacity: 0;
+  transform: translateY(0px);
+  transition: opacity 1s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.featureSection.visible,
+.infoSection.visible {
+  opacity: 1;
+  transform: translateY(0);  /* 화면에 보일 때 원래 위치로 이동 */
+}
+
+@media (max-width: 1024px) {
+    .featureSection,
+    .infoSection {
+        padding: 3rem 3%;
+    }
+
+    .featureContent,
+    .infoContainer {
+        flex-direction: column;
+    }
+
+    .featureText,
+    .serviceInfo {
+        padding: 0;
+        margin-bottom: 3rem;
+    }
+
+    .featureTitle {
+        font-size: 3rem;
+    }
+
+    .featureDescription {
+        font-size: 20px;
+        color: #333;
+    }
+
+    .featureImage {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .featureImage img {
+        max-width: 90%;
+        height: auto;
+    }
+
+    .featureImage {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .featureSection,
+    .infoSection {
+        padding: 2rem 2%;
+    }
+
+    .featureContent,
+    .infoContainer {
+        flex-direction: column;
+    }
+
+    .featureText,
+    .serviceInfo {
+        padding: 0;
+        margin-bottom: 3rem;
+    }
+
+    .featureTitle {
+        font-size: 2rem;
+    }
+
+    .featureDescription {
+        font-size: 18px;
+        color: #333;
+    }
+
+    .featureImage {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .featureImage img {
+        max-width: 90%;
+        height: auto;
+    }
+}
