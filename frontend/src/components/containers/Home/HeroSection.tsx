@@ -6,7 +6,7 @@ const HeroSection: React.FC = () => {
     return (
         <section className={styles.hero}>
             <div className={styles.heroContent}>
-                <ImageWrapper src="/images/Sub_Header.png" alt="Contract Document" width={1920} height={95} />
+                <ImageWrapper src="/images/Sub_Header.svg" alt="Contract Document" width={1920} height={95} />
             </div>
         </section>
     );

@@ -106,7 +106,7 @@ export default function AnalysisMain() {
     return (
         <div className={styles.container}>
             <div className={styles.logo}>
-                <ImageWrapper src="/images/Sub_Header.png" alt="Contract Document" width={1920} height={95} />
+                <ImageWrapper src="/images/Sub_Header.svg" alt="Contract Document" width={1920} height={95} />
             </div>
 
             <main className={styles.main}>
