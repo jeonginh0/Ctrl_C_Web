@@ -30,8 +30,8 @@ const InfoSection: React.FC = () => {
     const accordionItems = [
         {
             id: 'summary',
-            title: '계약서 요약 및 정리',
-            content: '업로드한 계약서를 AI가 분석하여 주요 내용을 정리합니다.',
+            title: '계약서 체크리스트 확인',
+            content: '업로드한 계약서를 분석하여 체크리스트를 제공합니다.',
             iconSrc: '/images/Main_service1.png',
         },
         {

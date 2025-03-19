@@ -33,7 +33,7 @@ const FeatureSection: React.FC = () => {
                 <div className={styles.featureText}>
                     <h2 className={styles.featureTitle}>이제 계약서 분석도 자동으로</h2>
                     <p className={styles.featureDescription}>
-                        계약서 요약 및 정리, 위험요소 & 누락요소 검토 등 여러 기능을 제공합니다
+                        계약서 체크리스트 확인, 위험요인 & 누락요소 검토 등 여러 기능을 제공합니다
                     </p>
                     <Link href="/analysis">
                         <Button className={buttons.button}>분석하기</Button>

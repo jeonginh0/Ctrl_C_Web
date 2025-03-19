@@ -50,6 +50,57 @@
     font-weight: bold;
 }
 
+.userSection {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profileWrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.profileImage {
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdownItem {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: black;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.dropdownItem:hover {
+    background-color: #f1f1f1;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav ul {
