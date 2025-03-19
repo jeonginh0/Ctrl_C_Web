@@ -32,16 +32,15 @@ export default function LoginMain() {
             const data = await response.json();
             console.log("로그인 성공", data);
 
-            const userData = {
-                username: data.user.username,
-                role: data.user.role,
-                email: data.user.email,
-                token: data.token,
-                isLogin: !!data.token,
-            };
+            const isLogin = !!data.token
 
             localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(userData));
+            localStorage.setItem("username", data.user.username);
+            localStorage.setItem("email", data.user.email);
+            localStorage.setItem("role", data.user.role);
+            localStorage.setItem("isLogin", JSON.stringify(isLogin));
+
+            window.dispatchEvent(new Event("storage"));
 
             router.push("/");
         } catch (error) {

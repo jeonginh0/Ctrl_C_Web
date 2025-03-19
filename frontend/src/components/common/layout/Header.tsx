@@ -5,31 +5,47 @@ import Image from 'next/image'
 import styles from '@/styles/Header.module.css'
 import buttons from '@/styles/Button.module.css'
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function Header() {
     const pathname = usePathname();
+    const router = useRouter();
     const [user, setUser] = useState<{ username: string | null; isLogin: boolean } | null>(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
-        const username = localStorage.getItem('username');
-        const isLogin = localStorage.getItem('isLogin') === 'true';
+        const loadUser = () => {
+            const username = localStorage.getItem("username");
+            const isLogin = localStorage.getItem("isLogin") === "true";
 
-        if (isLogin && username) {
-            setUser({ username, isLogin });
-        } else {
-            setUser(null);
-        }
+            if (isLogin && username) {
+                setUser({ username, isLogin });
+            } else {
+                setUser(null);
+            }
+        };
+
+        loadUser();
+
+        window.addEventListener("storage", loadUser);
+
+        return () => {
+            window.removeEventListener("storage", loadUser);
+        };
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('username');
-        localStorage.removeItem('email');
-        localStorage.removeItem('token');
-        localStorage.removeItem('isLogin');
+        localStorage.removeItem("username");
+        localStorage.removeItem("email");
+        localStorage.removeItem("token");
+        localStorage.removeItem("isLogin");
+
         setUser(null);
+        
+        window.dispatchEvent(new Event("storage"));
+        router.push("/")
     };
+
 
     return (
         <header className={styles.header}>
@@ -73,8 +89,8 @@ export default function Header() {
                         <span className={styles.username}>{user.username} 님</span>
                         {isDropdownOpen && (
                             <div className={styles.dropdownMenu}>
-                                <Link href="/profile" className={styles.dropdownItem}>🔧 정보변경</Link>
-                                <button className={styles.dropdownItem} onClick={handleLogout}>🚪 로그아웃</button>
+                                <Link href="/profile" className={styles.dropdownItem}>정보변경</Link>
+                                <button className={styles.dropdownItem} onClick={handleLogout}>로그아웃</button>
                             </div>
                         )}
                     </div>
