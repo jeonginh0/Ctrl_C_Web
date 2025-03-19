@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image'
 import styles from '@/styles/Header.module.css'
 import buttons from '@/styles/Button.module.css'
@@ -12,6 +12,11 @@ export default function Header() {
     const router = useRouter();
     const [user, setUser] = useState<{ username: string | null; isLogin: boolean } | null>(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+    const [isProfileHovered, setIsProfileHovered] = useState(false);
+    const [isLogoutHovered, setIsLogoutHovered] = useState(false);
 
     useEffect(() => {
         const loadUser = () => {
@@ -46,6 +51,19 @@ export default function Header() {
         router.push("/")
     };
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <header className={styles.header}>
@@ -84,13 +102,39 @@ export default function Header() {
             </nav>
             <div className={styles.userSection}>
                 {user?.isLogin ? (
-                    <div className={styles.profileWrapper} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                    <div 
+                        className={styles.profileWrapper} 
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
                         <Image src="/images/user_avatar.png" alt="프로필 이미지" width={40} height={40} className={styles.profileImage} />
                         <span className={styles.username}>{user.username} 님</span>
                         {isDropdownOpen && (
-                            <div className={styles.dropdownMenu}>
-                                <Link href="/profile" className={styles.dropdownItem}>정보변경</Link>
-                                <button className={styles.dropdownItem} onClick={handleLogout}>로그아웃</button>
+                            <div className={styles.dropdownMenu} ref={dropdownRef}>
+                                <div className={styles.dropdownItem}
+                                     onMouseEnter={() => setIsProfileHovered(true)}
+                                     onMouseLeave={() => setIsProfileHovered(false)}
+                                >
+                                    <Image 
+                                        src={isProfileHovered ? "/icons/user-edit-icon.svg" : "/icons/user-edit-icon-red.svg"} 
+                                        alt="편집 아이콘" 
+                                        width={16} 
+                                        height={16} 
+                                    />
+                                    <Link href="/profile" className={styles.dropdownText}>정보변경</Link>
+                                </div>
+                                <div className={styles.dropdownItem}
+                                     onMouseEnter={() => setIsLogoutHovered(true)}
+                                     onMouseLeave={() => setIsLogoutHovered(false)}
+                                     onClick={handleLogout}
+                                >
+                                    <Image 
+                                        src={isLogoutHovered ? "/icons/profile-remove.svg" : "/icons/profile-remove-red.svg"} 
+                                        alt="로그아웃 아이콘" 
+                                        width={16} 
+                                        height={16} 
+                                    />
+                                    <span className={styles.dropdownText}>로그아웃</span>
+                                </div>
                             </div>
                         )}
                     </div>
