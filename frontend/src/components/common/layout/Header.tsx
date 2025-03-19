@@ -106,7 +106,7 @@ export default function Header() {
                         className={styles.profileWrapper} 
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
-                        <Image src="/images/user_avatar.png" alt="프로필 이미지" width={40} height={40} className={styles.profileImage} />
+                        <Image src="/images/Erick.png" alt="프로필 이미지" width={40} height={40} className={styles.profileImage} />
                         <span className={styles.username}>{user.username} 님</span>
                         {isDropdownOpen && (
                             <div className={styles.dropdownMenu} ref={dropdownRef}>
