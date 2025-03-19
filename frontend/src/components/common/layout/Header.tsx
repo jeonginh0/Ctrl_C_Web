@@ -44,6 +44,7 @@ export default function Header() {
         localStorage.removeItem("email");
         localStorage.removeItem("token");
         localStorage.removeItem("isLogin");
+        localStorage.removeItem("role");
 
         setUser(null);
         
