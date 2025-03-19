@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import SuccessMessage from '@/components/common/messages/SuccessMessage';
 import styles from '@/styles/Signup.module.css';
+import apiClient from '../../../../ApiClient';
 
 // 폼 데이터 인터페이스 정의
 interface FormData {
@@ -54,7 +55,7 @@ const SignupMain = () => {
     }
 
     try {
-      await axios.post('http://localhost:3000/auth/send-verification-code', {
+      await apiClient.post('/auth/send-verification-code', {
         email: formData.email,
       });
 
@@ -69,7 +70,7 @@ const SignupMain = () => {
   // 인증번호 확인 요청
   const handleVerification = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/auth/verify-verification-code', {
+      const response = await apiClient.post('/auth/verify-verification-code', {
         email: formData.email,
         verificationCode: formData.verificationCode,
       });
@@ -111,14 +112,14 @@ const SignupMain = () => {
 
     // 회원가입 API 요청
     try {
-      const response = await axios.post('http://localhost:3000/auth/register', {
+      const response = await apiClient.post('/auth/register', {
         username: formData.username,
         email: formData.email,
         password: formData.password,
         verificationCode: formData.verificationCode,
       });
 
-      alert(response.data.message);
+      setSuccessMessage(response.data.message);
       // 성공 시 로그인 페이지로 이동
       window.location.href = '/login';
     } catch (error) {
