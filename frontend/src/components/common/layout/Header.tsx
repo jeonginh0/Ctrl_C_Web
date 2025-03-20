@@ -121,7 +121,7 @@ export default function Header() {
                                         width={16} 
                                         height={16} 
                                     />
-                                    <Link href="/profile" className={styles.dropdownText}>정보변경</Link>
+                                    <Link href="/mypage" className={styles.dropdownText}>마이페이지</Link>
                                 </div>
                                 <div className={styles.dropdownItem}
                                      onMouseEnter={() => setIsLogoutHovered(true)}
