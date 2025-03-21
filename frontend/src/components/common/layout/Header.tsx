@@ -44,6 +44,7 @@ export default function Header() {
         localStorage.removeItem("email");
         localStorage.removeItem("token");
         localStorage.removeItem("isLogin");
+        localStorage.removeItem("role");
 
         setUser(null);
         
@@ -106,7 +107,7 @@ export default function Header() {
                         className={styles.profileWrapper} 
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
-                        <Image src="/images/user_avatar.png" alt="프로필 이미지" width={40} height={40} className={styles.profileImage} />
+                        <Image src="/images/Erick.png" alt="프로필 이미지" width={40} height={40} className={styles.profileImage} />
                         <span className={styles.username}>{user.username} 님</span>
                         {isDropdownOpen && (
                             <div className={styles.dropdownMenu} ref={dropdownRef}>
@@ -120,7 +121,7 @@ export default function Header() {
                                         width={16} 
                                         height={16} 
                                     />
-                                    <Link href="/profile" className={styles.dropdownText}>정보변경</Link>
+                                    <Link href="/mypage" className={styles.dropdownText}>마이페이지</Link>
                                 </div>
                                 <div className={styles.dropdownItem}
                                      onMouseEnter={() => setIsLogoutHovered(true)}

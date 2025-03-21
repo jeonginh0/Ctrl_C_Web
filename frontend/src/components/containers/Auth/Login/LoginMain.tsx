@@ -6,6 +6,8 @@ import buttons from "@/styles/Button.module.css";
 import React from "react";
 import ImageWrapper from "@/components/common/inputs/ImageWrapper";
 import Link from "next/link";
+import apiClient from '../../../../ApiClient';
+import { AxiosResponse } from "axios";
 
 export default function LoginMain() {
     const [email, setEmail] = useState("");
@@ -17,34 +19,36 @@ export default function LoginMain() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:3000/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
-        
-            if (!response.ok) {
-                throw new Error("로그인 실패");
+            const response: AxiosResponse<{ token: string; user: { username: string; email: string; role: string } }> = await apiClient.post(
+                "/auth/login", 
+                { email, password }
+            );
+    
+            console.log("로그인 성공", response.data);
+    
+            const isLogin = !!response.data.token;
+    
+            try {
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("username", response.data.user.username);
+                localStorage.setItem("email", response.data.user.email);
+                localStorage.setItem("role", response.data.user.role);
+                localStorage.setItem("isLogin", JSON.stringify(isLogin));
+    
+                console.log("LocalStorage 저장 성공");
+            } catch (error) {
+                console.error("LocalStorage 저장 실패:", error);
             }
-        
-            const data = await response.json();
-            console.log("로그인 성공", data);
-
-            const isLogin = !!data.token
-
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("username", data.user.username);
-            localStorage.setItem("email", data.user.email);
-            localStorage.setItem("role", data.user.role);
-            localStorage.setItem("isLogin", JSON.stringify(isLogin));
-
+    
             window.dispatchEvent(new Event("storage"));
-
+    
             router.push("/");
-        } catch (error) {
-            setError(error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.");
+        } catch (error: any) {
+            if (error.response && error.response.data) {
+                setError(error.response.data.message || "로그인 실패");
+            } else {
+                setError("알 수 없는 오류가 발생했습니다.");
+            }
         }
     };
 

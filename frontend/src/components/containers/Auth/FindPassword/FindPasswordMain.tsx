@@ -43,9 +43,9 @@ export default function FindPasswordMain() {
                 <form onSubmit={handleFindPassword}>
                     <div className={styles.inputGroup}>
                         <input
-                        type="username"
+                        type="text"
                         value={username}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setUsername(e.target.value)}
                         className={styles.input}
                         placeholder="이름"
                         required
