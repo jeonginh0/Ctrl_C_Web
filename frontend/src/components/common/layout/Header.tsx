@@ -1,16 +1,14 @@
-"use client"
-
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image'
-import styles from '@/styles/Header.module.css'
-import buttons from '@/styles/Button.module.css'
+import Image from 'next/image';
+import styles from '@/styles/Header.module.css';
+import buttons from '@/styles/Button.module.css';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function Header() {
     const pathname = usePathname();
     const router = useRouter();
-    const [user, setUser] = useState<{ username: string | null; isLogin: boolean } | null>(null);
+    const [user, setUser] = useState<{ username: string | null; isLogin: boolean; image: string | null } | null>(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -22,9 +20,10 @@ export default function Header() {
         const loadUser = () => {
             const username = localStorage.getItem("username");
             const isLogin = localStorage.getItem("isLogin") === "true";
+            const image = localStorage.getItem("image");
 
             if (isLogin && username) {
-                setUser({ username, isLogin });
+                setUser({ username, isLogin, image });
             } else {
                 setUser(null);
             }
@@ -45,6 +44,7 @@ export default function Header() {
         localStorage.removeItem("token");
         localStorage.removeItem("isLogin");
         localStorage.removeItem("role");
+        localStorage.removeItem("image");
 
         setUser(null);
         
@@ -107,7 +107,13 @@ export default function Header() {
                         className={styles.profileWrapper} 
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
-                        <Image src="/images/Erick.png" alt="프로필 이미지" width={40} height={40} className={styles.profileImage} />
+                        <Image 
+                            src={user.image || "/images/Erick.png"} 
+                            alt="프로필 이미지" 
+                            width={40} 
+                            height={40} 
+                            className={styles.profileImage} 
+                        />
                         <span className={styles.username}>{user.username} 님</span>
                         {isDropdownOpen && (
                             <div className={styles.dropdownMenu} ref={dropdownRef}>

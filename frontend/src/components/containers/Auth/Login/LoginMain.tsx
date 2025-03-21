@@ -19,7 +19,7 @@ export default function LoginMain() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response: AxiosResponse<{ token: string; user: { username: string; email: string; role: string } }> = await apiClient.post(
+            const response: AxiosResponse<{ token: string; user: { username: string; email: string; image: string; createAt: Date; role: string } }> = await apiClient.post(
                 "/auth/login", 
                 { email, password }
             );
@@ -33,6 +33,7 @@ export default function LoginMain() {
                 localStorage.setItem("username", response.data.user.username);
                 localStorage.setItem("email", response.data.user.email);
                 localStorage.setItem("role", response.data.user.role);
+                localStorage.setItem("image", response.data.user.image);
                 localStorage.setItem("isLogin", JSON.stringify(isLogin));
     
                 console.log("LocalStorage 저장 성공");

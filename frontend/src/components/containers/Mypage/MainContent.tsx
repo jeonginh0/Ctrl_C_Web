@@ -52,26 +52,31 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
         return `${year}/${month}/${day}`;
     };
 
-    const handleEditClick = (field: keyof UserInfo) => {
+    const handleEditClick = async (field: keyof UserInfo) => {
         setIsEditing(field);
         setEditedData({ ...editedData, [field]: userData?.[field] });
     };
-
-    // 입력값 변경 핸들러
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditedData({ ...editedData, [isEditing!]: e.target.value });
     };
 
-    // 수정 완료 후 저장 (Enter 키)
     const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && isEditing && editedData[isEditing] !== undefined) {
             try {
                 const updateData = { [isEditing]: editedData[isEditing] };
-                await apiClient.patch("/auth/update-profile", updateData, {
+                const response = await apiClient.patch("/auth/update-profile", updateData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                    }
+                    },
                 });
+                // 수정된 사용자 데이터로 토큰 갱신
+                const newToken = response.data.token; // 새로 발급된 토큰
+                if (newToken) {
+                    localStorage.setItem("token", newToken); // 새 토큰 저장
+                    setToken(newToken); // 상태도 갱신
+                }
+    
                 fetchUserData(); // 데이터 갱신
                 setIsEditing(null);
             } catch (error) {
@@ -82,13 +87,12 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
         }
     };
 
-    // 프로필 이미지 변경 핸들러
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.files || event.target.files.length === 0) return;
-
+    
         const formData = new FormData();
         formData.append("image", event.target.files[0]);
-
+    
         try {
             const response = await apiClient.patch("/auth/update-profile", formData, {
                 headers: {
@@ -96,6 +100,14 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                     "Content-Type": "multipart/form-data",
                 },
             });
+    
+            // 새로 발급된 토큰 갱신
+            const newToken = response.data.token; // 서버에서 새로운 토큰을 반환한다고 가정
+            if (newToken) {
+                localStorage.setItem("token", newToken);
+                setToken(newToken);
+            }
+    
             setUserData((prev) => (prev ? { ...prev, image: response.data.updatedUser.image } : prev));
         } catch (error) {
             console.error("프로필 이미지 업데이트 실패:", error);
