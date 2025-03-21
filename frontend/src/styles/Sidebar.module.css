@@ -1,3 +1,5 @@
+/* Sidebar.module.css */
+
 .sidebar {
     width: 200px;
     height: 100vh;
@@ -7,12 +9,12 @@
     padding-top: 180px; /* 헤더 높이만큼 여백 추가 */
     margin-left: 380px;
 }
-  
+
 .menuList {
     list-style: none;
     padding: 0;
 }
-  
+
 .menuItem {
     display: flex;
     align-items: center;
@@ -23,13 +25,24 @@
     color: #666;
     transition: color 0.3s ease;
 }
-  
+
 .menuItem:hover {
-    color: #d0021b;
+    color: #F05252;
 }
-  
+
 .active {
-    color: #d0021b;
-    font-weight: bold;
+    color: #F05252;
 }
-  
+
+/* 아이콘 이미지 크기 및 트랜지션 효과 */
+.icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* hover 상태에서 아이콘 크기와 투명도 조정 */
+.menuItem:hover .icon {
+    transform: scale(1.2); /* 아이콘 크기 확대 */
+    opacity: 0.8; /* 아이콘 투명도 변경 */
+}

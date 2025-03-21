@@ -16,6 +16,8 @@ export default function Header() {
     const [isProfileHovered, setIsProfileHovered] = useState(false);
     const [isLogoutHovered, setIsLogoutHovered] = useState(false);
 
+    const baseURL = 'http://localhost:3000';
+
     useEffect(() => {
         const loadUser = () => {
             const username = localStorage.getItem("username");
@@ -31,6 +33,7 @@ export default function Header() {
 
         loadUser();
 
+        // localStorage 변경 감지
         window.addEventListener("storage", loadUser);
 
         return () => {
@@ -47,7 +50,7 @@ export default function Header() {
         localStorage.removeItem("image");
 
         setUser(null);
-        
+
         window.dispatchEvent(new Event("storage"));
         router.push("/")
     };
@@ -107,8 +110,8 @@ export default function Header() {
                         className={styles.profileWrapper} 
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
-                        <Image 
-                            src={user.image || "/images/Erick.png"} 
+                        <img 
+                            src={`${baseURL}${user.image}`} 
                             alt="프로필 이미지" 
                             width={40} 
                             height={40} 

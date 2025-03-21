@@ -20,6 +20,8 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
     const [isEditing, setIsEditing] = useState<keyof UserInfo | null>(null);
     const [editedData, setEditedData] = useState<Partial<UserInfo>>({});
 
+    const baseURL = 'http://localhost:3000';
+
     // 클라이언트에서만 localStorage에 접근
     const [token, setToken] = useState<string | null>(null);
 
@@ -65,20 +67,28 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
         if (e.key === "Enter" && isEditing && editedData[isEditing] !== undefined) {
             try {
                 const updateData = { [isEditing]: editedData[isEditing] };
+    
                 const response = await apiClient.patch("/auth/update-profile", updateData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                // 수정된 사용자 데이터로 토큰 갱신
-                const newToken = response.data.token; // 새로 발급된 토큰
+    
+                const newToken = response.data.updatedUser.token;
                 if (newToken) {
-                    localStorage.setItem("token", newToken); // 새 토큰 저장
-                    setToken(newToken); // 상태도 갱신
+                    localStorage.setItem("token", newToken);
+                    setToken(newToken);
                 }
     
-                fetchUserData(); // 데이터 갱신
+                const updatedUserData = { ...userData, ...updateData };
+    
+                if (updatedUserData.username) {
+                    localStorage.setItem("username", updatedUserData.username);
+                }
+    
+                fetchUserData();
                 setIsEditing(null);
+    
             } catch (error) {
                 console.error("사용자 정보 업데이트 실패:", error);
             }
@@ -101,24 +111,45 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                 },
             });
     
-            // 새로 발급된 토큰 갱신
-            const newToken = response.data.token; // 서버에서 새로운 토큰을 반환한다고 가정
+            console.log("서버 응답:", response.data);
+            
+            const newImage = response.data.updatedUser.updatedUser.image;
+            
+            const newToken = response.data.updatedUser.token;
+            
             if (newToken) {
-                localStorage.setItem("token", newToken);
+                localStorage.removeItem("username");
+                localStorage.removeItem("email");
+                localStorage.removeItem("token");
+                localStorage.removeItem("isLogin");
+                localStorage.removeItem("role");
+                localStorage.removeItem("image");
+                
+                localStorage.setItem("token", newToken); 
+                localStorage.setItem("image", newImage); 
+                localStorage.setItem("username", response.data.updatedUser.updatedUser.username); 
+                localStorage.setItem("email", response.data.updatedUser.updatedUser.email);
+                localStorage.setItem("role", response.data.updatedUser.updatedUser.role)
+                localStorage.setItem("isLogin", "true");
+                
                 setToken(newToken);
             }
     
-            setUserData((prev) => (prev ? { ...prev, image: response.data.updatedUser.image } : prev));
+            setUserData((prev) =>
+                prev ? { ...prev, image: newImage } : prev
+            );
+    
+            window.location.reload();
+    
         } catch (error) {
             console.error("프로필 이미지 업데이트 실패:", error);
         }
     };
-
-    // 이미지 파일 입력을 트리거하는 함수
+    
     const handleImageClick = () => {
         const fileInput = document.getElementById("image-upload-input") as HTMLInputElement;
         if (fileInput) {
-            fileInput.click(); // 파일 입력 창 열기
+            fileInput.click();
         }
     };
 
@@ -135,7 +166,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                             <p>프로필 사진</p>
                             <span>프로필 변경 가능</span>
                             <img
-                                src={userData.image}
+                                src={`${baseURL}${userData.image}`}
                                 alt="Profile"
                                 className={styles.profileImage}
                                 onClick={handleImageClick} // 클릭 시 파일 선택창 열기
@@ -170,6 +201,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                                             alt="username edit"
                                             width={15}
                                             height={15}
+                                            className={styles.editimage}
                                             onClick={() => handleEditClick("username")}
                                         />
                                     </>
@@ -195,6 +227,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                                 alt="password edit"
                                 width={15}
                                 height={15}
+                                className={styles.editimage}
                                 onClick={() => handleEditClick("password")}
                                 />
                             </>
