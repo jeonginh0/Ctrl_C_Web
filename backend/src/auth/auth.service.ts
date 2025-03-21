@@ -7,16 +7,13 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
 import * as nodemailer from 'nodemailer';
-import { User, UserDocument } from './entity/user.schema'; // User와 UserDocument를 직접 임포트
+import { User, UserDocument } from './entity/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Options } from 'multer';  // 오류를 수정하려면 'multer'의 'Options' 타입을 사용
 
-// 프로젝트 루트 디렉터리 기반으로 uploads 폴더 지정
-const uploadDir = path.join(process.cwd(), 'src/uploads');
+const uploadDir = path.join(process.cwd(), '/uploads');
 
-// 업로드 디렉터리가 존재하는지 확인하고, 없으면 생성
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -24,15 +21,15 @@ if (!fs.existsSync(uploadDir)) {
 // multer 설정
 export const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir);  // 실제 저장 위치: src/uploads
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);  // 파일 확장자
-    cb(null, Date.now() + ext);  // 파일 이름을 현재 시간과 확장자로 설정
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + ext);
   },
 });
 
-export const upload: multer.Options = {  // multer의 Options 타입 사용
+export const upload: multer.Options = {
   storage: storage,
 };
 
