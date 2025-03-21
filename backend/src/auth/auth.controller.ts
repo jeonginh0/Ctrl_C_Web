@@ -66,7 +66,8 @@ export class AuthController {
     const userEmail = req.user.email; // JWT에서 이메일 정보 가져옴
 
     if (file) {
-      updateUserDto.image = file.path; // 파일 경로 또는 URL을 image 필드에 저장
+      // 업로드된 이미지의 파일 경로를 DTO에 추가
+      updateUserDto.image = file.path.replace('uploads', 'http://localhost:3000/uploads'); // 클라이언트에서 접근할 수 있는 URL로 변환
     }
 
     const updatedUser = await this.authService.updateProfile(userEmail, updateUserDto);

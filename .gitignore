@@ -1,5 +1,5 @@
-/frontend
+# /frontend
 /frontend/node_modules
 
-/backend
+# /backend
 /backend/node_modules
