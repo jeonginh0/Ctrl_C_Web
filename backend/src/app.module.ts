@@ -25,7 +25,7 @@ import { AuthModule } from './auth/auth.module';
       envFilePath: '.env',
     }),
     MulterModule.register({
-      dest: './uploads', // 파일이 저장될 폴더 경로
+      dest: join(__dirname, '..', 'uploads'), // 절대 경로로 설정
     }),
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     AuthModule,

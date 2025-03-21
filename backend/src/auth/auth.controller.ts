@@ -3,11 +3,10 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { UserDocument } from './entity/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { File } from 'multer';
-
+import { Express } from 'express';  // Express 타입을 추가
+import { upload } from './auth.service';  // multer의 upload 변수
 
 @Controller('auth')
 export class AuthController {
@@ -50,28 +49,29 @@ export class AuthController {
   @UseGuards(JwtAuthGuard) // JWT 인증을 위한 Guard 사용
   @Get('profile')
   findProfile(@Request() req): Promise<{ email: string; username: string; password: string; image: string; createAt: Date }> {
-    const user: UserDocument = req.user; // JWT 토큰에서 user 정보 가져옴
+    const user = req.user; // JWT 토큰에서 user 정보 가져옴
     return this.authService.getProfile(user.email); // AuthService의 getProfile 메서드 호출
   }
 
   // 프로필 수정
   @UseGuards(JwtAuthGuard)
   @Patch('update-profile')
-  @UseInterceptors(FileInterceptor('image')) // 이미지 필드로 파일을 받음
+  @UseInterceptors(FileInterceptor('image', upload)) // 이미지 필드로 파일을 받음
   async updateProfile(
     @Request() req,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile() file: File,
+    @UploadedFile() file: Express.Multer.File, // Multer 파일 타입 명시
   ) {
     const userEmail = req.user.email; // JWT에서 이메일 정보 가져옴
-
+  
     if (file) {
       // 업로드된 이미지의 파일 경로를 DTO에 추가
-      updateUserDto.image = file.path.replace('uploads', 'http://localhost:3000/uploads'); // 클라이언트에서 접근할 수 있는 URL로 변환
+      updateUserDto.image = `/uploads/${file.filename}`;
     }
-
-    const updatedUser = await this.authService.updateProfile(userEmail, updateUserDto);
-
+  
+    // file을 전달하여 updateProfile 호출
+    const updatedUser = await this.authService.updateProfile(userEmail, updateUserDto, file);
+  
     return { message: '프로필이 성공적으로 업데이트되었습니다.', updatedUser };
   }
 }
