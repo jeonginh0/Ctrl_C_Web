@@ -1,7 +1,13 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Get, Patch, UseGuards, Request, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { UserDocument } from './entity/user.schema';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { File } from 'multer';
+
 
 @Controller('auth')
 export class AuthController {
@@ -38,5 +44,33 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto);
+  }
+
+  // JWT 인증 후 프로필 조회
+  @UseGuards(JwtAuthGuard) // JWT 인증을 위한 Guard 사용
+  @Get('profile')
+  findProfile(@Request() req): Promise<{ email: string; username: string; password: string; image: string; createAt: Date }> {
+    const user: UserDocument = req.user; // JWT 토큰에서 user 정보 가져옴
+    return this.authService.getProfile(user.email); // AuthService의 getProfile 메서드 호출
+  }
+
+  // 프로필 수정
+  @UseGuards(JwtAuthGuard)
+  @Patch('update-profile')
+  @UseInterceptors(FileInterceptor('image')) // 이미지 필드로 파일을 받음
+  async updateProfile(
+    @Request() req,
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() file: File,
+  ) {
+    const userEmail = req.user.email; // JWT에서 이메일 정보 가져옴
+
+    if (file) {
+      updateUserDto.image = file.path; // 파일 경로 또는 URL을 image 필드에 저장
+    }
+
+    const updatedUser = await this.authService.updateProfile(userEmail, updateUserDto);
+
+    return { message: '프로필이 성공적으로 업데이트되었습니다.', updatedUser };
   }
 }
