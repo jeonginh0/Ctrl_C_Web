@@ -1,23 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import * as nodemailer from 'nodemailer';
-import { User, UserDocument } from './entity/user.schema';
+import UserModel, { UserDocument } from './entity/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
   private readonly JWT_SECRET = process.env.JWT_SECRET;
   private readonly emailVerificationCodes = new Map<string, string>();
-  private readonly verifiedEmails = new Set<string>(); // 인증된 이메일 저장
+  private readonly verifiedEmails = new Set<string>();
 
-  constructor(@InjectModel(User.name) public userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(UserModel.name) public userModel: Model<UserDocument>) {}
 
+  // 인증번호 전송
   private async sendVerificationCode(email: string, code: string): Promise<void> {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -34,7 +35,7 @@ export class AuthService {
       text: `인증 코드는: ${code}`,
     };
     
-    console.log(`인증 코드: ${code}`); // 콘솔에 인증 코드 출력 (디버깅용)
+    console.log(`인증 코드: ${code}`);
     await transporter.sendMail(mailOptions);
   }
 
@@ -57,11 +58,11 @@ export class AuthService {
   
     this.verifiedEmails.add(email);
   
-    return { message: '인증 코드가 확인되었습니다.' };  // 200 상태 코드는 기본 값
+    return { message: '인증 코드가 확인되었습니다.' };
   }
 
-  async register(createUserDto: CreateUserDto): Promise<User> {
-    const { username, email, password, role } = createUserDto;
+  async register(createUserDto: CreateUserDto): Promise<UserDocument> {
+    const { username, email, password, image, role } = createUserDto;
 
     if (!this.verifiedEmails.has(email)) {
       throw new Error('이메일 인증이 완료되지 않았습니다.');
@@ -72,15 +73,17 @@ export class AuthService {
       username,
       email,
       password: hashedPassword,
+      image,
       role,
     });
 
-    this.verifiedEmails.delete(email); // 회원가입 완료 후 인증된 이메일 삭제
+    this.verifiedEmails.delete(email);
 
     return user.save();
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<{ token: string; user: User }> {
+  // 로그인
+  async login(loginUserDto: LoginUserDto): Promise<{ token: string; user: UserDocument }> {
     const { email, password } = loginUserDto;
 
     try {
@@ -109,4 +112,52 @@ export class AuthService {
       throw new Error('예상치 못한 오류가 발생했습니다.');
     }
   }
+
+  // 내 정보 조회
+  async getProfile(userEmail: string): Promise<{ email: string, username: string, password: string, image: string, createAt: Date }> {
+    const user = await this.userModel.findOne({ email: userEmail }).exec();
+
+    if (!user) {
+      throw new HttpException('사용자를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    return {
+      email: user.email,
+      username: user.username,
+      password: user.password,
+      image: user.image,
+      createAt: user.createAt,
+    };
+  }
+
+  // 프로필 정보 업데이트
+  async updateProfile(userEmail: string, updateUserDto: UpdateUserDto): Promise<UserDocument> {
+    const existingUser = await this.userModel.findOne({ email: userEmail });
+  
+    if (!existingUser) {
+      throw new HttpException('사용자를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+    }
+  
+    const { username, password, image } = updateUserDto;
+  
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : existingUser.password;
+  
+    const updatedData = {
+      username: username ?? existingUser.username,
+      password: hashedPassword,
+      image: image ?? existingUser.image,
+    };
+
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { email: userEmail },
+      updatedData,
+      { new: true }
+    ).exec();
+  
+    if (!updatedUser) {
+      throw new HttpException('사용자 정보 업데이트에 실패했습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  
+    return updatedUser;
+  }  
 }
