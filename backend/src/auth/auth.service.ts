@@ -131,33 +131,42 @@ export class AuthService {
   }
 
   // 프로필 정보 업데이트
-  async updateProfile(userEmail: string, updateUserDto: UpdateUserDto): Promise<UserDocument> {
+  async updateProfile(userEmail: string, updateUserDto: UpdateUserDto): Promise<{ updatedUser: UserDocument, token: string }> {
     const existingUser = await this.userModel.findOne({ email: userEmail });
-  
+
     if (!existingUser) {
       throw new HttpException('사용자를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
     }
-  
+
     const { username, password, image } = updateUserDto;
-  
+
     const hashedPassword = password ? await bcrypt.hash(password, 10) : existingUser.password;
-  
+
     const updatedData = {
       username: username ?? existingUser.username,
       password: hashedPassword,
       image: image ?? existingUser.image,
     };
 
+    // JWT_SECRET 체크
+    if (!this.JWT_SECRET) {
+      throw new Error('JWT_SECRET이 정의되지 않았습니다.');
+    }
+
     const updatedUser = await this.userModel.findOneAndUpdate(
       { email: userEmail },
       updatedData,
       { new: true }
     ).exec();
-  
+
     if (!updatedUser) {
       throw new HttpException('사용자 정보 업데이트에 실패했습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  
-    return updatedUser;
-  }  
+
+    // JWT 토큰 발급
+    const payload = { email: updatedUser.email, role: updatedUser.role };
+    const token = jwt.sign(payload, this.JWT_SECRET, { expiresIn: '12h' });
+
+    return { updatedUser, token };  // 반환 타입 수정
+  }
 }
