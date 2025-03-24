@@ -195,4 +195,17 @@ export class AuthService {
 
     return { updatedUser, token };  // 반환 타입 수정
   }
+  
+  // 회원탈퇴
+  async deleteUser(email: string): Promise<{ message: string }> {
+    const user = await this.userModel.findOne({ email }).exec();
+    
+    if (!user) {
+      throw new HttpException('사용자를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+    }
+  
+    await this.userModel.deleteOne({ email }).exec();
+    
+    return { message: '회원탈퇴가 완료되었습니다.' };
+  }
 }
