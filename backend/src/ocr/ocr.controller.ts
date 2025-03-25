@@ -8,15 +8,15 @@ export class OcrController {
 
     @Post('upload')
     async analyzeContract(@Body() ocrUploadDto: OcrUploadDto) {
-        const { base64Image } = ocrUploadDto;
+        const { base64Image, fileType } = ocrUploadDto;
 
-        if (!base64Image) {
-            throw new BadRequestException('이미지 데이터가 없습니다.');
+        if (!base64Image || !fileType) {
+            throw new BadRequestException('이미지 데이터 또는 파일 타입이 없습니다.');
         }
 
         // Base64 디코딩하여 Buffer 변환
         const imageBuffer = Buffer.from(base64Image, 'base64');
 
-        return this.ocrService.analyzeContract(imageBuffer);
+        return this.ocrService.analyzeContract(imageBuffer, fileType);
     }
 }
