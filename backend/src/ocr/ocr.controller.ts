@@ -1,22 +1,18 @@
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { OcrService } from './ocr.service';
-import { OcrUploadDto } from './dto/ocr-upload.dto';
 
 @Controller('ocr')
 export class OcrController {
     constructor(private readonly ocrService: OcrService) {}
 
     @Post('upload')
-    async analyzeContract(@Body() ocrUploadDto: OcrUploadDto) {
-        const { base64Image, fileType } = ocrUploadDto;
-
-        if (!base64Image || !fileType) {
-            throw new BadRequestException('이미지 데이터 또는 파일 타입이 없습니다.');
+    @UseInterceptors(FileInterceptor('file'))
+    async analyzeContract(@UploadedFile() file: Express.Multer.File) {
+        if (!file) {
+            throw new BadRequestException('파일이 업로드되지 않았습니다.');
         }
 
-        // Base64 디코딩하여 Buffer 변환
-        const imageBuffer = Buffer.from(base64Image, 'base64');
-
-        return this.ocrService.analyzeContract(imageBuffer, fileType);
+        return this.ocrService.analyzeContract(file.buffer, file.mimetype);
     }
 }
