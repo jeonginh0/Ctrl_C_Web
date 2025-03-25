@@ -76,33 +76,38 @@ export default function AnalysisMain() {
         try {
             setUploading(true);
     
-            const reader = new FileReader();
-            reader.onloadend = async () => {
-                const base64String = (reader.result as string).split(',')[1];
-    
-                try {
-                    const response = await apiClient.post('/ocr/upload', { 
-                        base64Image: base64String, 
-                        fileType: file.type  // 📌 파일 타입 추가
-                    });
-    
-                    console.log('OCR 결과:', response.data);
-                    setUploadSuccess(true);
-                } catch (error) {
-                    console.error('OCR 분석 실패:', error);
-                    setError('파일 분석 중 오류가 발생했습니다.');
-                } finally {
-                    setUploading(false);
-                }
+            const formData = new FormData();
+            
+            // OCR 요청 JSON 데이터 생성
+            const requestJson = {
+                images: [{ format: file.type.split('/')[1], name: 'contract' }],
+                requestId: crypto.randomUUID(),  // UUID 생성
+                version: 'V2',
+                timestamp: Date.now(),
             };
     
-            reader.readAsDataURL(file);
-        } catch (err) {
-            console.error('OCR 분석 실패:', err);
+            // FormData에 JSON 데이터 추가
+            formData.append('message', JSON.stringify(requestJson));
+    
+            // FormData에 파일 추가
+            formData.append('file', file);
+    
+            // API 요청
+            const response = await apiClient.post('/ocr/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+    
+            console.log('OCR 결과:', response.data);
+            setUploadSuccess(true);
+        } catch (error) {
+            console.error('OCR 분석 실패:', error);
             setError('파일 분석 중 오류가 발생했습니다.');
+        } finally {
             setUploading(false);
         }
-    };
+    };    
 
     const triggerFileInput = () => {
         if (fileInputRef.current) {
