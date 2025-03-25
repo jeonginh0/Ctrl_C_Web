@@ -7,6 +7,8 @@ type FileUploadSectionProps = {
     setPreview: (preview: { type: 'image' | 'pdf'; url: string } | null) => void;
     file: File | null;
     setFile: (file: File | null) => void;
+    error: string;
+    uploading: boolean;
 };
 
 const FileUploadSection: React.FC<FileUploadSectionProps> = ({ preview, setPreview, file, setFile }) => {
