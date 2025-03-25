@@ -1,6 +1,5 @@
 import React, { ChangeEvent, DragEvent } from 'react';
 import styles from '@/styles/AnalysisMain.module.css';
-import apiClient from '@/ApiClient';
 
 type FileUploadSectionProps = {
     preview: { type: 'image' | 'pdf'; url: string } | null;
@@ -13,7 +12,8 @@ type FileUploadSectionProps = {
     handleDragOver: (e: DragEvent<HTMLDivElement>) => void;
     handleDragLeave: (e: DragEvent<HTMLDivElement>) => void;
     handleDrop: (e: DragEvent<HTMLDivElement>) => void;
-    handleUpload: () => void;
+    handleUpload: () => Promise<void>;
+    triggerFileInput: () => void;
 };
 
 const FileUploadSection: React.FC<FileUploadSectionProps> = ({

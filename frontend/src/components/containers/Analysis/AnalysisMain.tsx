@@ -8,6 +8,7 @@ import ErrorMessage from '@/components/common/messages/ErrorMessage';
 import SuccessMessage from '@/components/common/messages/SuccessMessage';
 import styles from '@/styles/AnalysisMain.module.css';
 import ImageWrapper from '@/components/common/inputs/ImageWrapper';
+import apiClient from '@/ApiClient';
 
 export default function AnalysisMain() {
     const [file, setFile] = useState<File | null>(null);
@@ -67,37 +68,49 @@ export default function AnalysisMain() {
         }
     };
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();  // 폼의 기본 동작을 막아야 페이지 리로드가 발생하지 않음
-
+    const handleSubmit = async () => {
+    
         if (!file) {
             setError('분석할 파일을 선택해주세요.');
             return;
         }
-
+    
         try {
             setUploading(true);
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            const response = await fetch('https://localhost:3000/api/analyze', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error('파일 업로드 중 오류가 발생했습니다.');
-            }
-
-            setUploadSuccess(true);
+    
+            // 파일을 Base64로 변환
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64String = (reader.result as string).split(',')[1];
+    
+                // OCR API 요청
+                const response = await fetch('http://localhost:3000/ocr/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ base64Image: base64String }),
+                });
+    
+                if (!response.ok) {
+                    throw new Error('OCR 분석 요청 실패');
+                }
+    
+                const result = await response.json();
+                console.log('OCR 결과:', result);
+    
+                setUploadSuccess(true); // 성공 메시지 표시
+            };
+    
+            reader.readAsDataURL(file);
         } catch (err) {
-            console.error('Upload error:', err);
-            setError('파일 업로드 중 오류가 발생했습니다.');
+            console.error('OCR 분석 실패:', err);
+            setError('파일 분석 중 오류가 발생했습니다.');
         } finally {
             setUploading(false);
         }
     };
+    
 
     const triggerFileInput = () => {
         fileInputRef.current?.click();
@@ -121,19 +134,22 @@ export default function AnalysisMain() {
                     file={file}
                     error={error}
                     uploading={uploading}
+                    setPreview={setPreview}
+                    setFile={setFile}      
                     handleFileChange={handleFileChange}
                     handleDragOver={handleDragOver}
                     handleDragLeave={handleDragLeave}
                     handleDrop={handleDrop}
+                    handleUpload={handleSubmit}
                     triggerFileInput={triggerFileInput}
                 />
 
                 {error && <ErrorMessage message={error} />}
-                {uploadSuccess && <SuccessMessage message={'파일이 정상적으로 업로드 되었습니다. 분석결과를 기다려주세요.'}/>}
+                {uploadSuccess && <SuccessMessage message={'파일이 정상적으로 업로드 되었습니다. 분석결과를 기다려주세요.'}/>}                
             </main>
 
             <div className={styles.actionSection}>
-                <Button className={buttons.uploadButton} onClick={(e) => formRef.current?.requestSubmit()} disabled = {!file || uploading}>
+                <Button className={buttons.uploadButton} onClick={(e) => formRef.current?.requestSubmit()} disabled={!file || uploading}>
                     {uploading ? '업로드 중...' : '파일 분석하기'}
                 </Button>
             </div>
