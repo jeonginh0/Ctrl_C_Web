@@ -81,13 +81,18 @@ export default function AnalysisMain() {
                 const base64String = (reader.result as string).split(',')[1];
     
                 try {
-                    const response = await apiClient.post('/ocr/upload', { base64Image: base64String });
+                    const response = await apiClient.post('/ocr/upload', { 
+                        base64Image: base64String, 
+                        fileType: file.type  // 📌 파일 타입 추가
+                    });
     
                     console.log('OCR 결과:', response.data);
                     setUploadSuccess(true);
                 } catch (error) {
                     console.error('OCR 분석 실패:', error);
                     setError('파일 분석 중 오류가 발생했습니다.');
+                } finally {
+                    setUploading(false);
                 }
             };
     
@@ -95,7 +100,6 @@ export default function AnalysisMain() {
         } catch (err) {
             console.error('OCR 분석 실패:', err);
             setError('파일 분석 중 오류가 발생했습니다.');
-        } finally {
             setUploading(false);
         }
     };
