@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useRef, ChangeEvent, DragEvent, FormEvent } from 'react';
+import { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import Button from "@/components/common/inputs/Button";
-import buttons from "@/styles/Button.module.css"
+import buttons from "@/styles/Button.module.css";
 import FileUploadSection from './FileUploadSection';
 import ErrorMessage from '@/components/common/messages/ErrorMessage';
 import SuccessMessage from '@/components/common/messages/SuccessMessage';
 import styles from '@/styles/AnalysisMain.module.css';
 import ImageWrapper from '@/components/common/inputs/ImageWrapper';
-import apiClient from '@/ApiClient';
 
 export default function AnalysisMain() {
     const [file, setFile] = useState<File | null>(null);
@@ -17,7 +16,6 @@ export default function AnalysisMain() {
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [error, setError] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const formRef = useRef<HTMLFormElement>(null);
 
     const handleFileSelect = (selectedFile: File) => {
         const fileType = selectedFile.type;
@@ -69,21 +67,18 @@ export default function AnalysisMain() {
     };
 
     const handleSubmit = async () => {
-    
         if (!file) {
             setError('분석할 파일을 선택해주세요.');
             return;
         }
-    
+
         try {
             setUploading(true);
-    
-            // 파일을 Base64로 변환
+
             const reader = new FileReader();
             reader.onloadend = async () => {
                 const base64String = (reader.result as string).split(',')[1];
-    
-                // OCR API 요청
+
                 const response = await fetch('http://localhost:3000/ocr/upload', {
                     method: 'POST',
                     headers: {
@@ -91,17 +86,17 @@ export default function AnalysisMain() {
                     },
                     body: JSON.stringify({ base64Image: base64String }),
                 });
-    
+
                 if (!response.ok) {
                     throw new Error('OCR 분석 요청 실패');
                 }
-    
+
                 const result = await response.json();
                 console.log('OCR 결과:', result);
-    
-                setUploadSuccess(true); // 성공 메시지 표시
+
+                setUploadSuccess(true);
             };
-    
+
             reader.readAsDataURL(file);
         } catch (err) {
             console.error('OCR 분석 실패:', err);
@@ -110,10 +105,13 @@ export default function AnalysisMain() {
             setUploading(false);
         }
     };
-    
 
     const triggerFileInput = () => {
-        fileInputRef.current?.click();
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        } else {
+            console.error("파일 입력 요소를 찾을 수 없습니다.");
+        }
     };
 
     return (
@@ -143,13 +141,20 @@ export default function AnalysisMain() {
                     handleUpload={handleSubmit}
                     triggerFileInput={triggerFileInput}
                 />
+                <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileChange} 
+                    style={{ display: 'none' }} 
+                    accept=".pdf,.jpg,.jpeg,.png" 
+                />
 
                 {error && <ErrorMessage message={error} />}
                 {uploadSuccess && <SuccessMessage message={'파일이 정상적으로 업로드 되었습니다. 분석결과를 기다려주세요.'}/>}                
             </main>
 
             <div className={styles.actionSection}>
-                <Button className={buttons.uploadButton} onClick={(e) => formRef.current?.requestSubmit()} disabled={!file || uploading}>
+                <Button className={buttons.uploadButton} onClick={handleSubmit} disabled={!file || uploading}>
                     {uploading ? '업로드 중...' : '파일 분석하기'}
                 </Button>
             </div>
