@@ -4,6 +4,9 @@ import axios from 'axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { OcrResult } from './entity/ocr-result.schema';
+import { v4 as uuidv4 } from 'uuid';
+import * as FormData from 'form-data';
+
 
 @Injectable()
 export class OcrService {
@@ -20,18 +23,34 @@ export class OcrService {
 
     async analyzeContract(imageBuffer: Buffer, fileType: string): Promise<any> {
         try {
-            const format = this.getFileFormat(fileType); // 파일 타입 매핑
+            console.log('📌 파일 타입:', fileType);
+            const format = this.getFileFormat(fileType);
+            console.log('📌 변환된 파일 형식:', format);
     
-            const response = await axios.post(
-                this.OCR_API_URL,
-                { images: [{ format, data: imageBuffer.toString('base64') }] },
-                {
-                    headers: {
-                        'X-OCR-SECRET': this.OCR_SECRET,
-                        'Content-Type': 'application/json',
-                    },
+            const requestJson = {
+                images: [
+                    {
+                        format,
+                        name: 'contract'
+                    }
+                ],
+                requestId: uuidv4(),
+                version: 'V2',
+                timestamp: Date.now(),
+            };
+    
+            const formData = new FormData();
+            formData.append('message', JSON.stringify(requestJson));
+            formData.append('file', imageBuffer, { filename: `upload.${format}`, contentType: fileType });
+    
+            const response = await axios.post(this.OCR_API_URL, formData, {
+                headers: {
+                    'X-OCR-SECRET': this.OCR_SECRET,
+                    ...formData.getHeaders(),
                 },
-            );
+            });
+    
+            console.log('📌 OCR API 응답:', response.data);
     
             if (!response.data?.images || response.data.images.length === 0) {
                 throw new InternalServerErrorException('OCR API 응답이 올바르지 않습니다.');
@@ -42,16 +61,22 @@ export class OcrService {
                 boundingBox: field.boundingPoly.vertices,
             })) || [];
     
-            const savedResult = await new this.ocrModel({ data: extractedData }).save();
-    
-            return savedResult;
+            try {
+                const savedResult = await new this.ocrModel({ data: extractedData }).save();
+                console.log('📌 MongoDB 저장 성공:', savedResult);
+                return savedResult;
+            } catch (dbError) {
+                console.error('📌 MongoDB 저장 실패:', dbError);
+                throw new InternalServerErrorException('DB 저장 중 오류가 발생했습니다.');
+            }
         } catch (error) {
-            console.error('OCR 분석 실패:', error.message);
+            console.error('📌 OCR 분석 실패:', error.message);
             throw new InternalServerErrorException('OCR 분석 중 오류가 발생했습니다.');
         }
     }
     
     private getFileFormat(fileType: string): string {
+        console.log('fileType:', fileType);
         const mimeTypeMap: { [key: string]: string } = {
             'image/jpeg': 'jpeg',
             'image/jpg': 'jpg',
