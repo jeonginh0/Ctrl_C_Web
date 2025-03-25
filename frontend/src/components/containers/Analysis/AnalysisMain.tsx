@@ -8,6 +8,7 @@ import ErrorMessage from '@/components/common/messages/ErrorMessage';
 import SuccessMessage from '@/components/common/messages/SuccessMessage';
 import styles from '@/styles/AnalysisMain.module.css';
 import ImageWrapper from '@/components/common/inputs/ImageWrapper';
+import apiClient from '@/ApiClient';
 
 export default function AnalysisMain() {
     const [file, setFile] = useState<File | null>(null);
@@ -71,32 +72,25 @@ export default function AnalysisMain() {
             setError('분석할 파일을 선택해주세요.');
             return;
         }
-
+    
         try {
             setUploading(true);
-
+    
             const reader = new FileReader();
             reader.onloadend = async () => {
                 const base64String = (reader.result as string).split(',')[1];
-
-                const response = await fetch('http://localhost:3000/ocr/upload', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ base64Image: base64String }),
-                });
-
-                if (!response.ok) {
-                    throw new Error('OCR 분석 요청 실패');
+    
+                try {
+                    const response = await apiClient.post('/ocr/upload', { base64Image: base64String });
+    
+                    console.log('OCR 결과:', response.data);
+                    setUploadSuccess(true);
+                } catch (error) {
+                    console.error('OCR 분석 실패:', error);
+                    setError('파일 분석 중 오류가 발생했습니다.');
                 }
-
-                const result = await response.json();
-                console.log('OCR 결과:', result);
-
-                setUploadSuccess(true);
             };
-
+    
             reader.readAsDataURL(file);
         } catch (err) {
             console.error('OCR 분석 실패:', err);
