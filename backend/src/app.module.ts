@@ -5,6 +5,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { join } from 'path';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { OcrModule } from './ocr/ocr.module';
 import { OcrService } from './ocr/ocr.service';
 import { OcrResult, OcrResultSchema } from './ocr/entity/ocr-result.schema';
 
@@ -32,6 +33,7 @@ import { OcrResult, OcrResultSchema } from './ocr/entity/ocr-result.schema';
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     MongooseModule.forFeature([{ name: OcrResult.name, schema: OcrResultSchema }]),
     AuthModule,
+    OcrModule
   ],
   providers: [OcrService],
   exports: [OcrService],
