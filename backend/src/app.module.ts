@@ -5,6 +5,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { join } from 'path';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { OcrService } from './ocr/ocr.service';
+import { OcrResult, OcrResultSchema } from './ocr/entity/ocr-result.schema';
 
 @Module({
   imports: [
@@ -28,7 +30,10 @@ import { AuthModule } from './auth/auth.module';
       dest: join(__dirname, '..', 'uploads'), // 절대 경로로 설정
     }),
     MongooseModule.forRoot(process.env.MONGO_URI as string),
+    MongooseModule.forFeature([{ name: OcrResult.name, schema: OcrResultSchema }]),
     AuthModule,
   ],
+  providers: [OcrService],
+  exports: [OcrService],
 })
 export class AppModule {}
