@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Analysis, AnalysisDocument } from './entity/analysis.schema';
@@ -17,18 +17,24 @@ export class AnalysisService {
       { status: boolean; content?: string; boundingBox?: { x: number; y: number }[] }
     > = {};
 
-    // 최신 OCR 결과 가져오기
-    const ocrData = await this.ocrResultModel.findOne().sort({ createdAt: -1 }).lean();
+    const ocrData = await this.ocrResultModel
+      .findOne({ userId: new Types.ObjectId(userId) })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (!ocrData) {
+      throw new ForbiddenException('해당 사용자의 OCR 데이터를 찾을 수 없습니다.');
+    }
+
     const ocrTexts = ocrData?.data || [];
 
-    // GPT 응답을 OCR 데이터와 비교하여 boundingBox 찾기
     for (const [key, value] of Object.entries(analysisResult)) {
       let matchedBoundingBox: { x: number; y: number }[] = [];
 
       if (value.content) {
         for (const ocrItem of ocrTexts) {
           if (ocrItem.text.includes(value.content)) {
-            matchedBoundingBox = ocrItem.boundingBox; // OCR에서 가져온 boundingBox 할당
+            matchedBoundingBox = ocrItem.boundingBox;
             break;
           }
         }
@@ -42,7 +48,7 @@ export class AnalysisService {
     }
 
     const contractAnalysis = new this.analysisModel({
-      userId: new Types.ObjectId(userId), // ✅ userId 추가
+      userId: new Types.ObjectId(userId),
       sections: formattedSections,
     });
 
