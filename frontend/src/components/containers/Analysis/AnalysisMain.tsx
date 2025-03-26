@@ -7,16 +7,15 @@ import FileUploadSection from './FileUploadSection';
 import styles from '@/styles/AnalysisMain.module.css';
 import ImageWrapper from '@/components/common/inputs/ImageWrapper';
 import apiClient from '@/ApiClient';
-import { useRecoilState } from 'recoil';
-import { uploadedFileState, previewState } from '@/state/atoms';
 
 export default function AnalysisMain() {
-    const [file, setFile] = useRecoilState(uploadedFileState);
-    const [preview, setPreview] = useRecoilState(previewState);
+    const [file, setFile] = useState<File | null>(null);
+    const [preview, setPreview] = useState<{ type: 'image' | 'pdf'; url: string } | null>(null);
     const [uploading, setUploading] = useState(false);
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [error, setError] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isClient, setIsClient] = useState(false);
 
     const handleFileSelect = (selectedFile: File) => {
         const fileType = selectedFile.type;
