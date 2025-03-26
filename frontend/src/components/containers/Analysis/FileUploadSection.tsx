@@ -56,10 +56,6 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
                 )}
                 <input type="file" onChange={handleFileChange} className={styles.fileInput} accept=".pdf,.jpg,.jpeg,.png" />
             </div>
-            
-            <button onClick={handleUpload} disabled={uploading} className={styles.uploadButton}>
-                {uploading ? "분석 중..." : "OCR 분석 요청"}
-            </button>
 
             {error && <p className={styles.error}>{error}</p>}
         </div>
