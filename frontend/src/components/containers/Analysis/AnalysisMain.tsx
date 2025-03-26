@@ -4,8 +4,6 @@ import { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import Button from "@/components/common/inputs/Button";
 import buttons from "@/styles/Button.module.css";
 import FileUploadSection from './FileUploadSection';
-import ErrorMessage from '@/components/common/messages/ErrorMessage';
-import SuccessMessage from '@/components/common/messages/SuccessMessage';
 import styles from '@/styles/AnalysisMain.module.css';
 import ImageWrapper from '@/components/common/inputs/ImageWrapper';
 import apiClient from '@/ApiClient';
@@ -130,6 +128,7 @@ export default function AnalysisMain() {
                     preview={preview}
                     file={file}
                     error={error}
+                    uploadSuccess={uploadSuccess}
                     uploading={uploading}
                     setPreview={setPreview}
                     setFile={setFile}      
@@ -147,9 +146,6 @@ export default function AnalysisMain() {
                     style={{ display: 'none' }} 
                     accept=".pdf,.jpg,.jpeg,.png" 
                 />
-
-                {error && <ErrorMessage message={error} />}
-                {uploadSuccess && <SuccessMessage message={'파일이 정상적으로 업로드 되었습니다. 분석결과를 기다려주세요.'}/>}                
             </main>
 
             <div className={styles.actionSection}>

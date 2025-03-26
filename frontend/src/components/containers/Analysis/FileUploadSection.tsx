@@ -1,5 +1,6 @@
 import React, { ChangeEvent, DragEvent } from 'react';
 import styles from '@/styles/AnalysisMain.module.css';
+import SuccessMessage from '@/components/common/messages/SuccessMessage';
 
 type FileUploadSectionProps = {
     preview: { type: 'image' | 'pdf'; url: string } | null;
@@ -7,6 +8,7 @@ type FileUploadSectionProps = {
     file: File | null;
     setFile: (file: File | null) => void;
     error: string;
+    uploadSuccess: boolean;
     uploading: boolean;
     handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
     handleDragOver: (e: DragEvent<HTMLDivElement>) => void;
@@ -18,11 +20,17 @@ type FileUploadSectionProps = {
 
 const FileUploadSection: React.FC<FileUploadSectionProps> = ({
     preview,
+    setPreview,
     file,
+    setFile,
+    error,
+    uploadSuccess,
+    uploading,
     handleFileChange,
     handleDragOver,
     handleDragLeave,
     handleDrop,
+    handleUpload
 }) => {
     return (
         <div className={styles.uploadSection}>
@@ -51,6 +59,9 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
                 )}
                 <input type="file" onChange={handleFileChange} className={styles.fileInput} accept=".pdf,.jpg,.jpeg,.png" />
             </div>
+
+            {error && <p className={styles.error}>{error}</p>}
+            {uploadSuccess && <SuccessMessage message={'파일이 정상적으로 업로드 되었습니다. 분석결과를 기다려주세요.'}/>}
         </div>
     );
 };
