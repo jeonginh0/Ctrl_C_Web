@@ -78,21 +78,17 @@ export default function AnalysisMain() {
     
             const formData = new FormData();
             
-            // OCR 요청 JSON 데이터 생성
             const requestJson = {
                 images: [{ format: file.type.split('/')[1], name: 'contract' }],
-                requestId: crypto.randomUUID(),  // UUID 생성
+                requestId: crypto.randomUUID(),
                 version: 'V2',
                 timestamp: Date.now(),
             };
     
-            // FormData에 JSON 데이터 추가
             formData.append('message', JSON.stringify(requestJson));
     
-            // FormData에 파일 추가
             formData.append('file', file);
     
-            // API 요청
             const response = await apiClient.post('/ocr/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
