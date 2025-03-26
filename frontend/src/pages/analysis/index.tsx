@@ -1,5 +1,9 @@
-import AnalysisMain from '@/components/containers/Analysis/AnalysisMain'
+import dynamic from 'next/dynamic';
 import styles from '@/styles/AnalysisMain.module.css'
+
+const AnalysisMain = dynamic(() => import('@/components/containers/Analysis/AnalysisMain'), {
+    ssr: false,
+});
 
 export default function Analysis() {
     return (

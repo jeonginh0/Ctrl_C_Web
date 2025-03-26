@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, ChangeEvent, DragEvent } from 'react';
+import { useState, useRef, useEffect, ChangeEvent, DragEvent } from 'react';
 import Button from "@/components/common/inputs/Button";
 import buttons from "@/styles/Button.module.css";
 import FileUploadSection from './FileUploadSection';
@@ -96,6 +96,14 @@ export default function AnalysisMain() {
             });
     
             console.log('OCR 결과:', response.data);
+
+            const saveResponse = await apiClient.post('/analysis/save', {}, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            console.log('분석 저장 결과:', saveResponse.data);
             setUploadSuccess(true);
         } catch (error) {
             console.error('OCR 분석 실패:', error);
