@@ -18,16 +18,11 @@ type FileUploadSectionProps = {
 
 const FileUploadSection: React.FC<FileUploadSectionProps> = ({
     preview,
-    setPreview,
     file,
-    setFile,
-    error,
-    uploading,
     handleFileChange,
     handleDragOver,
     handleDragLeave,
     handleDrop,
-    handleUpload
 }) => {
     return (
         <div className={styles.uploadSection}>
@@ -56,8 +51,6 @@ const FileUploadSection: React.FC<FileUploadSectionProps> = ({
                 )}
                 <input type="file" onChange={handleFileChange} className={styles.fileInput} accept=".pdf,.jpg,.jpeg,.png" />
             </div>
-
-            {error && <p className={styles.error}>{error}</p>}
         </div>
     );
 };
