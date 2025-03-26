@@ -8,8 +8,8 @@ export class AnalysisController {
 
   @UseGuards(JwtAuthGuard)
   @Post('save')
-  async saveAnalysis(@Request() req, @Body() analysisResult: Record<string, any>) {
+  async saveAnalysis(@Request() req) {
     const userId = req.user.userId;
-    return this.analysisService.saveAnalysis(userId, analysisResult);
+    return this.analysisService.saveAnalysis(userId);
   }
 }
