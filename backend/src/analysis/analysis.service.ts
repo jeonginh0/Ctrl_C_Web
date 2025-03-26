@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, ForbiddenException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import axios from 'axios';
@@ -16,34 +16,46 @@ export class AnalysisService {
   ) {}
 
   async saveAnalysis(userId: string): Promise<Analysis> {
-    const formattedSections: Record<
-      string,
-      { status: boolean; content?: string; boundingBox?: { x: number; y: number }[] }
-    > = {};
-  
-    // 로그인한 유저의 최신 OCR 결과 가져오기
-    const ocrData = await this.ocrResultModel
-      .findOne({ userId: new Types.ObjectId(userId) })
-      .sort({ createdAt: -1 })
-      .lean();
-  
-    if (!ocrData) {
-      throw new ForbiddenException('해당 사용자의 OCR 데이터를 찾을 수 없습니다.');
+    if (!userId) {
+      console.error('❌ userId가 undefined입니다.');
+      throw new BadRequestException('유효한 사용자 ID가 필요합니다.');
     }
-  
-    const ocrTexts = ocrData?.data || [];
-  
+
+    let objectId: Types.ObjectId;
+    try {
+      objectId = new Types.ObjectId(userId);
+    } catch (error) {
+      console.error('❌ userId 변환 오류:', error.message);
+      throw new BadRequestException('잘못된 사용자 ID 형식입니다.');
+    }
+
+    console.log('🔍 요청된 userId:', userId);
+    console.log('🔍 변환된 ObjectId:', objectId);
+
+    // 로그인한 유저의 최신 OCR 결과 가져오기
+    const ocrData = await this.ocrResultModel.findOne({ userId: objectId }).sort({ createdAt: -1 });
+
+    if (!ocrData) {
+      console.warn(`⚠️ 해당 사용자의 OCR 데이터를 찾을 수 없습니다. userId: ${userId}`);
+      throw new ForbiddenException('해당 사용자의 OCR 데이터가 존재하지 않습니다.');
+    }
+
+    const ocrTexts = ocrData.data || [];
+    console.log('📄 OCR 데이터 개수:', ocrTexts.length);
+
     // GPT에게 분석 요청
     const gptResponse = await this.analyzeWithGPT(ocrTexts);
     
     if (!gptResponse) {
-      throw new InternalServerErrorException('GPT 분석 결과가 없습니다.');
+      console.error('❌ GPT 분석 결과가 없습니다.');
+      throw new InternalServerErrorException('GPT 분석 결과를 가져올 수 없습니다.');
     }
-  
+
     // GPT 응답을 OCR 데이터와 비교하여 boundingBox 찾기
-    for (const [key, value] of Object.entries(gptResponse || {})) { // 기본값 추가
+    const formattedSections: Record<string, { status: boolean; content?: string; boundingBox?: { x: number; y: number }[] }> = {};
+    for (const [key, value] of Object.entries(gptResponse || {})) {
       let matchedBoundingBox: { x: number; y: number }[] = [];
-  
+
       if (value.content) {
         for (const ocrItem of ocrTexts) {
           if (ocrItem.text.includes(value.content)) {
@@ -52,20 +64,21 @@ export class AnalysisService {
           }
         }
       }
-  
+
       formattedSections[key] = {
-        status: value.status,
+        status: value?.status ?? false,
         content: value.content || null,
-        boundingBox: matchedBoundingBox,
+        boundingBox: matchedBoundingBox.length > 0 ? matchedBoundingBox : undefined,
       };
     }
-  
+
     // 분석 결과 저장
     const contractAnalysis = new this.analysisModel({
-      userId: new Types.ObjectId(userId),
+      userId: objectId,
       sections: formattedSections,
     });
-  
+
+    console.log('✅ 계약서 분석 결과 저장 완료');
     return contractAnalysis.save();
   }
 
@@ -241,12 +254,25 @@ export class AnalysisService {
         { headers: { Authorization: `Bearer ${this.GPT_API_KEY}`, 'Content-Type': 'application/json' } }
       );
 
-      return response.data.choices?.[0]?.message?.content 
-        ? JSON.parse(response.data.choices[0].message.content) 
-        : {};
+      const gptContent = response.data.choices?.[0]?.message?.content;
+      if (!gptContent) {
+        throw new InternalServerErrorException('GPT 응답이 비어 있습니다.');
+      }
+      console.log('📌 GPT 원본 응답:', gptContent);
+
+      let formattedResponse = gptContent.trim();
+      if (formattedResponse.startsWith('```json')) {
+        formattedResponse = formattedResponse.replace(/^```json/, '').replace(/```$/, '').trim();
+      }
+
+      try {
+        return JSON.parse(formattedResponse);
+      } catch (parseError) {
+        throw new InternalServerErrorException('GPT 응답을 JSON으로 변환할 수 없습니다.');
+      }
     } catch (error) {
       console.error('📌 GPT 요청 실패:', error.message);
-      return {}; // null 대신 빈 객체 반환
+      throw new InternalServerErrorException('GPT 요청 중 오류가 발생했습니다.');
     }
-}
+  }
 }

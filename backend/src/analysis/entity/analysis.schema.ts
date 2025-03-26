@@ -5,7 +5,7 @@ export type AnalysisDocument = Analysis & Document;
 
 @Schema()
 class Section {
-  @Prop({ required: true })
+  @Prop({ required: true, default: false })
   status: boolean;
 
   @Prop()

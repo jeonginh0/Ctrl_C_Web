@@ -124,8 +124,8 @@ export class AuthService {
         throw new Error('JWT_SECRET이 정의되지 않았습니다.');
       }
 
-      const payload = { email: user.email, role: user.role };
-      const token = jwt.sign(payload, this.JWT_SECRET, {expiresIn: '12h'});
+      const payload = { _id: user._id, email: user.email, role: user.role };
+      const token = jwt.sign(payload, this.JWT_SECRET, { expiresIn: '12h' });
 
       return { token, user };
     } catch (error) {
