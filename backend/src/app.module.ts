@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { OcrModule } from './ocr/ocr.module';
 import { OcrService } from './ocr/ocr.service';
 import { OcrResult, OcrResultSchema } from './ocr/entity/ocr-result.schema';
+import { AnalysisModule } from './analysis/analysis.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { OcrResult, OcrResultSchema } from './ocr/entity/ocr-result.schema';
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     MongooseModule.forFeature([{ name: OcrResult.name, schema: OcrResultSchema }]),
     AuthModule,
-    OcrModule
+    OcrModule,
+    AnalysisModule
   ],
   providers: [OcrService],
   exports: [OcrService],
