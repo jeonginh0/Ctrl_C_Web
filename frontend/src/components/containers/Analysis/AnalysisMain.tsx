@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect, ChangeEvent, DragEvent } from 'react';
 import Button from "@/components/common/inputs/Button";
 import buttons from "@/styles/Button.module.css";
@@ -16,7 +17,9 @@ export default function AnalysisMain() {
     const [error, setError] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isClient, setIsClient] = useState(false);
-
+    
+    const router = useRouter();
+    
     const handleFileSelect = (selectedFile: File) => {
         const fileType = selectedFile.type;
         if (!['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'].includes(fileType)) {
@@ -85,7 +88,6 @@ export default function AnalysisMain() {
             };
     
             formData.append('message', JSON.stringify(requestJson));
-    
             formData.append('file', file);
     
             const response = await apiClient.post('/ocr/upload', formData, {
@@ -95,14 +97,20 @@ export default function AnalysisMain() {
             });
     
             console.log('OCR 결과:', response.data);
-
+    
             const saveResponse = await apiClient.post('/analysis/save', {}, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             });
-
+    
             console.log('분석 저장 결과:', saveResponse.data);
+    
+            if (saveResponse.data && saveResponse.data._id) {
+                const analysisId = saveResponse.data._id; // ObjectId 가져오기
+                router.push(`/analysis/${analysisId}`); // 결과 페이지로 이동
+            }
+    
             setUploadSuccess(true);
         } catch (error) {
             console.error('OCR 분석 실패:', error);
@@ -110,7 +118,7 @@ export default function AnalysisMain() {
         } finally {
             setUploading(false);
         }
-    };    
+    };   
 
     const triggerFileInput = () => {
         if (fileInputRef.current) {
