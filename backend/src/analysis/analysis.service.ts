@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Injectable, ForbiddenException, InternalServerErrorException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import axios from 'axios';
@@ -80,6 +80,24 @@ export class AnalysisService {
 
     console.log('✅ 계약서 분석 결과 저장 완료');
     return contractAnalysis.save();
+  }
+
+  // 분석결과 조회
+  async getAnalysisById(analysisId: string, userId: string): Promise<Analysis> {
+    if (!Types.ObjectId.isValid(analysisId) || !Types.ObjectId.isValid(userId)) {
+      throw new NotFoundException('잘못된 ID 형식입니다.');
+    }
+  
+    const analysis = await this.analysisModel.findOne({
+      _id: new Types.ObjectId(analysisId),
+      userId: new Types.ObjectId(userId), // 🔥 userId 일치하는지 확인
+    });
+  
+    if (!analysis) {
+      throw new NotFoundException('해당 ID의 분석 결과를 찾을 수 없거나, 접근 권한이 없습니다.');
+    }
+  
+    return analysis;
   }
 
   private async analyzeWithGPT(ocrTexts: any[]): Promise<Record<string, any>> {
