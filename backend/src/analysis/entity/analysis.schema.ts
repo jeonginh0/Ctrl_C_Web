@@ -22,6 +22,9 @@ export class Analysis {
   @Prop({ type: MongooseSchema.Types.ObjectId, required: true })
   userId: Types.ObjectId;
 
+  @Prop({ required: true })
+  image: string;
+
   @Prop({ type: Map, of: SectionSchema })
   sections: Record<string, Section>;
 }

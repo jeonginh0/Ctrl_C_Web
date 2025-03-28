@@ -13,6 +13,9 @@ export class OcrResult extends Document {
 
     @Prop({ default: Date.now })
     createAt: Date;
+
+    @Prop({ required: true })
+    image: string;
 }
 
 export const OcrResultSchema = SchemaFactory.createForClass(OcrResult);

@@ -41,7 +41,9 @@ export class AnalysisService {
     }
 
     const ocrTexts = ocrData.data || [];
+    const imagePath = ocrData.image;
     console.log('📄 OCR 데이터 개수:', ocrTexts.length);
+    console.log('🖼️ 이미지 경로:', imagePath);
 
     // GPT에게 분석 요청
     const gptResponse = await this.analyzeWithGPT(ocrTexts);
@@ -76,6 +78,7 @@ export class AnalysisService {
     const contractAnalysis = new this.analysisModel({
       userId: objectId,
       sections: formattedSections,
+      image: imagePath
     });
 
     console.log('✅ 계약서 분석 결과 저장 완료');

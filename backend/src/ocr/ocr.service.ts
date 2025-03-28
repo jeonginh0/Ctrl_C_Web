@@ -6,6 +6,8 @@ import { Model } from 'mongoose';
 import { OcrResult } from './entity/ocr-result.schema';
 import { v4 as uuidv4 } from 'uuid';
 import * as FormData from 'form-data';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as sharp from 'sharp';
 import { Types } from 'mongoose';
 
@@ -13,6 +15,7 @@ import { Types } from 'mongoose';
 export class OcrService {
     private readonly OCR_API_URL: string;
     private readonly OCR_SECRET: string;
+    private readonly uploadPath: string;
 
     constructor(
         private configService: ConfigService,
@@ -20,6 +23,7 @@ export class OcrService {
     ) {
         this.OCR_API_URL = this.configService.get<string>('OCR_API_URL') as string;
         this.OCR_SECRET = this.configService.get<string>('OCR_SECRET') as string;
+        this.uploadPath = path.join(__dirname, '..', '..', 'uploads', 'contracts');
     }
 
     async analyzeContract(userId: string, imageBuffer: Buffer, fileType: string): Promise<any> {
@@ -27,10 +31,14 @@ export class OcrService {
             console.log('📌 파일 타입:', fileType);
 
             const processedImage = await this.processImage(imageBuffer, fileType);
+            const contractName = `${uuidv4()}.${this.getFileFormat(fileType)}`;
+            const contractPath = path.join(this.uploadPath, contractName);
 
             const format = this.getFileFormat(fileType);
             console.log('📌 변환된 파일 형식:', format);
 
+            fs.writeFileSync(contractPath, processedImage);
+            
             const requestJson = {
                 images: [{ format, name: 'contract' }],
                 requestId: uuidv4(),
@@ -38,9 +46,11 @@ export class OcrService {
                 timestamp: Date.now(),
             };
 
+            const relativeContractPath = `/uploads/contracts/${contractName}`;
+
             const formData = new FormData();
             formData.append('message', JSON.stringify(requestJson));
-            formData.append('file', processedImage, { filename: `upload.${format}`, contentType: fileType });
+            formData.append('file', fs.createReadStream(contractPath), { filename: contractName, contentType: fileType });
 
             const response = await axios.post(this.OCR_API_URL, formData, {
                 headers: {
@@ -65,7 +75,8 @@ export class OcrService {
             try {
                 const savedResult = await new this.ocrModel({
                     userId: new Types.ObjectId(userId),
-                    data: groupedText
+                    data: groupedText,
+                    image: relativeContractPath,
                 }).save();
 
                 console.log('📌 MongoDB 저장 성공:', savedResult);
