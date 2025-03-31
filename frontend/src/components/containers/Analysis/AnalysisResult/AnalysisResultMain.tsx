@@ -34,15 +34,22 @@ const AnalysisResultMain: React.FC = () => {
         '누락 요소'
     ];
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+        setError('로그인이 필요합니다.');
+        return;
+    }
+
     useEffect(() => {
         if (id) {
             const fetchAnalysisData = async () => {
                 try {
                     const response = await apiClient.get(`/analysis/${id}`, {
                         headers: {
-                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                            Authorization: `Bearer ${token}`,
                         },
                     });
+                    setAnalysisData(response.data);
                 } catch (error) {
                     setError('데이터를 가져오는 데 실패했습니다.');
                 } finally {
