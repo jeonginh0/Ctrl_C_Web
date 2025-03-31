@@ -109,8 +109,8 @@ export default function AnalysisMain() {
             if (saveResponse.data && saveResponse.data._id) {
                 const analysisId = saveResponse.data._id; // ObjectId 가져오기
                 console.log('analysisId :', analysisId);
-                // router.push(`/analysis/${analysisId}`); // 결과 페이지로 이동
-                router.push(`/analysis/analysis-success`); // 결과 페이지로 이동
+                router.push(`/analysis/${analysisId}`); // 결과 페이지로 이동
+                // router.push(`/analysis/analysis-success`); // 결과 페이지로 이동
             }
     
             setUploadSuccess(true);
