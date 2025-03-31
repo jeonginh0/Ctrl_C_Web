@@ -1,0 +1,132 @@
+.mainContent {
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+}
+
+.subtitle {
+    font-weight: bold;
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.horizontalLine {
+    height: 1px;
+    background-color: #000;
+    margin: 15px 0 25px 0;
+    width: 100%;
+}
+  
+.checklistContainer {
+    display: flex;
+    flex-direction: column;
+    font-size: 10px;
+    gap: 20px;
+}
+  
+.section {
+    /* border-bottom: 1px solid #eee; */
+    /* padding-bottom: 15px; */
+}
+  
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 5px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid black;
+}
+  
+.sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+  
+.statusIcon {
+    width: 21px;
+    height: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: contain; /* 이미지가 요소 크기에 맞게 조정됨 */
+    background-repeat: no-repeat; /* 반복 방지 */
+    background-position: center;
+    flex-shrink: 0; /* 부모 요소 크기에 따라 변형되지 않도록 고정 */
+}
+  
+.true {
+    background-image: url('/icons/CheckBox.svg');
+    background-color: transparent;
+}
+  
+.false {
+    background-image: url('/icons/XBox.svg');
+    background-color: transparent;
+}
+  
+.dropdownIcon {
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+  
+.sectionItems {
+    padding-left: px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+  
+.checklistItem {
+    display: flex;
+    align-items: center; /* 아이콘과 텍스트를 같은 선상에 배치 */
+    gap: 8px; /* 아이콘과 텍스트 사이 간격 조정 */
+}
+
+.smallCheckIcon {
+    width: 15px; /* 작은 체크박스 크기 */
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.detailText {
+    font-size: 11px;
+}
+  
+.itemRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    /* border-bottom: 1px solid #eee; */
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+  
+  /* 반응형 디자인 */
+@media (max-width: 768px) {
+    .itemRow {
+      grid-template-columns: 1fr;
+    }
+}

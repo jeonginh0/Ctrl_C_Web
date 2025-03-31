@@ -5,6 +5,7 @@ import ContractChecklist from './ContractChecklist';
 import RiskFactors from './RiskFactors';
 import MissingFactors from './MissingFactors';
 import styles from '@/styles/AnalysisResultMain.module.css';
+import apiClient from '@/ApiClient';  // axios 클라이언트 import
 
 type AnalysisData = {
     checklist: Record<string, any>;
@@ -34,32 +35,20 @@ const AnalysisResultMain: React.FC = () => {
     ];
 
     useEffect(() => {
-        // Dummy Data (API로 교체)
-        const dummyData = {
-            checklist: {
-                item1: '체크리스트 항목 1',
-                item2: '체크리스트 항목 2',
-            },
-            riskFactors: '위험 요소 내용',
-            missingFactors: '누락 요소 내용',
-            image: '/path/to/image.jpg',
-            sections: {
-                section1: {
-                    status: true,
-                    content: '내용 1',
-                    boundingBox: [{ x: 10, y: 10 }]
-                },
-                section2: {
-                    status: false,
-                    content: '내용 2',
-                    boundingBox: [{ x: 20, y: 20 }]
+        if (id) {
+            const fetchAnalysisData = async () => {
+                try {
+                    const response = await apiClient.get(`/analysis/${id}`);
+                    setAnalysisData(response.data);
+                } catch (error) {
+                    setError('데이터를 가져오는 데 실패했습니다.');
+                } finally {
+                    setLoading(false);
                 }
-            }
-        };
-
-        setAnalysisData(dummyData);
-        setLoading(false);
-    }, []);
+            };
+            fetchAnalysisData();
+        }
+    }, [id]);
 
     if (loading) return <p>로딩 중...</p>;
     if (error) return <p>{error}</p>;
