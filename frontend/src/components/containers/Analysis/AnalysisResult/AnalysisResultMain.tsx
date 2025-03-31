@@ -38,8 +38,11 @@ const AnalysisResultMain: React.FC = () => {
         if (id) {
             const fetchAnalysisData = async () => {
                 try {
-                    const response = await apiClient.get(`/analysis/${id}`);
-                    setAnalysisData(response.data);
+                    const response = await apiClient.get(`/analysis/${id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    });
                 } catch (error) {
                     setError('데이터를 가져오는 데 실패했습니다.');
                 } finally {
