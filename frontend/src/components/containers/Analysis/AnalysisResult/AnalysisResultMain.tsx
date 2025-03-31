@@ -52,6 +52,7 @@ const AnalysisResultMain: React.FC = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                console.log(response);
                 setAnalysisData(response.data);
             } catch (error) {
                 setError('데이터를 가져오는 데 실패했습니다.');
@@ -61,31 +62,7 @@ const AnalysisResultMain: React.FC = () => {
         };
     
         fetchAnalysisData();
-    }, [id, token]); // token을 의존성 배열에 포함
-
-    // useEffect(() => {
-    //     // 테스트 단계이므로 API 연동을 하지 않음
-    //     // if (!id || !token) return;
-        
-    //     // 더미 데이터 설정 (테스트용)
-    //     const dummyData: AnalysisData = {
-    //         checklist: {
-    //             '항목 1': { status: true, content: '내용 1' },
-    //             '항목 2': { status: false, content: '내용 2' }
-    //         },
-    //         riskFactors: '위험 요인 예시',
-    //         missingFactors: '누락 요소 예시',
-    //         image: '/images/example.png',
-    //         sections: {
-    //             'section1': { status: true, content: '섹션 1 내용', boundingBox: [{ x: 10, y: 20 }] },
-    //             'section2': { status: false, content: '섹션 2 내용', boundingBox: [{ x: 15, y: 25 }] }
-    //         }
-    //     };
-
-    //     setAnalysisData(dummyData);
-    //     setLoading(false);
-        
-    // }, [id, token]); // token을 의존성 배열에 포함
+    }, [id, token]);
 
     if (loading) return <p>로딩 중...</p>;
     if (error) return <p>{error}</p>;
