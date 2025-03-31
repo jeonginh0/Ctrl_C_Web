@@ -26,6 +26,7 @@ const AnalysisResultMain: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('전체 분석 내용');
+    const [token, setToken] = useState<string | null>(null);
 
     const tabs = [
         '전체 분석 내용',
@@ -34,11 +35,12 @@ const AnalysisResultMain: React.FC = () => {
         '누락 요소'
     ];
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-        setError('로그인이 필요합니다.');
-        return;
-    }
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('token');
+            setToken(token);
+        }
+    }, []);
 
     useEffect(() => {
         if (id) {
