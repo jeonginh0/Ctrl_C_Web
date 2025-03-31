@@ -172,43 +172,39 @@ export class AnalysisService {
         📌 **출력 예시**
         json
         {
-          "임대인 정보 확인": {
+          "계약서 상 임대인(집주인) 및 임차인(세입자) 정보 확인": {
             "status": true/false,
-            "content": "임대인 정보 내용"
-          },
-          "임차인 정보 확인": {
-            "status": true/false,
-            "content": "임차인 정보 내용"
+            "content": "임대인, 임차인 정보 내용"
           },
           "계약 기간 명시": {
             "status": true/false,
             "content": "계약 기간 내용"
           },
-          "계약 대상 명시": {
+          "계약 대상(주택 주소, 면적) 명확하게 기재": {
             "status": true/false,
             "content": "계약 대상(주소, 면적) 내용"
           },
-          "보증금 및 월세 명시": {
+          "보증금 및 월세 명시 (금액 숫자 정확히 기입)": {
             "status": true/false,
             "content": "보증금 및 월세 내용"
           },
-          "월세 납부 방법 명시": {
+          "월세 납부 방법 명시 (계좌이체/현금 납부 방식)": {
             "status": true/false,
             "content": "납부 방법 내용"
           },
-          "연체 시 연체이자율 기재": {
+          "연체 시 연체이자율 기재 (법정 최고이자율 초과 금지)": {
             "status": true/false,
             "content": "연체이자율 내용"
           },
-          "관리비 포함 항목 확인": {
+          "관리비 포함 항목 확인 (수도, 전기, 가스, 인터넷 등)": {
             "status": true/false,
             "content": "관리비 포함 항목 내용"
           },
-          "개별 부담 항목 확인": {
+          "개별 부담 항목(난방비, 주차비 등) 확인": {
             "status": true/false,
             "content": "개별 부담 항목 내용"
           },
-          "기본 시설물 유지보수 책임 명확화": {
+          "기본 시설물(도배, 장판, 가전 등) 유지·보수 책임 명확화": {
             "status": true/false,
             "content": "유지보수 책임 내용"
           },
@@ -228,7 +224,7 @@ export class AnalysisService {
             "status": true/false,
             "content": "반전세 관련 내용"
           },
-          "계약 해지 시 위약금 여부": {
+          "중도 해지 시 위약금 여부": {
             "status": true/false,
             "content": "위약금 여부 내용"
           },
@@ -236,7 +232,7 @@ export class AnalysisService {
             "status": true/false,
             "content": "갱신 가능 여부 및 조건 내용"
           },
-          "임대인의 중도 해지 가능 여부": {
+          "임대인의 중도 해지 가능 여부 (매매 시 계약 승계 여부 포함)": {
             "status": true/false,
             "content": "중도 해지 가능 여부 내용"
           },
