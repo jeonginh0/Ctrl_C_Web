@@ -68,46 +68,46 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
         '특약 사항 명시 (계약서에 추가 기재)',
     ];
     
-    // useEffect(() => {
-    //     // checklist.sections의 타입을 명확하게 지정
-    //     if (checklist?.sections) {
-    //         const sectionsData: ChecklistItem[] = Object.entries(checklist.sections).map(([key, value]) => {
-    //             // value의 타입을 ChecklistItem으로 명시
-    //             const section = value as ChecklistItem;  // value를 ChecklistItem 타입으로 강제 변환
-    //             return {
-    //                 title: key,
-    //                 status: section.status,
-    //                 items: section.items?.map((item: { status: 'true' | 'false'; text: string }) => ({
-    //                     status: item.status,
-    //                     text: item.text
-    //                 }))
-    //             };
-    //         });
-    
-    //         setApiData(sectionsData);
-    //         setLoading(false);
-    //     } else {
-    //         setError('데이터 로딩에 실패했습니다.');
-    //         setLoading(false);
-    //     }
-    // }, [checklist]);
-
     useEffect(() => {
+        // checklist.sections의 타입을 명확하게 지정
         if (checklist?.sections) {
-            const initialState: { [key: string]: boolean } = {};
-            Object.keys(checklist.sections).forEach((key) => {
-                initialState[key] = false;  // 기본값을 false로 설정
+            const sectionsData: ChecklistItem[] = Object.entries(checklist.sections).map(([key, value]) => {
+                // value의 타입을 ChecklistItem으로 명시
+                const section = value as ChecklistItem;  // value를 ChecklistItem 타입으로 강제 변환
+                return {
+                    title: key,
+                    status: section.status,
+                    items: section.items?.map((item: { status: 'true' | 'false'; text: string }) => ({
+                        status: item.status,
+                        text: item.text
+                    }))
+                };
             });
-            setOpenSections(initialState);
+    
+            setApiData(sectionsData);
+            setLoading(false);
+        } else {
+            setError('데이터 로딩에 실패했습니다.');
+            setLoading(false);
         }
-    }, [checklist]); // checklist가 변경될 때마다 실행
+    }, [checklist]);
 
-    const toggleSection = (sectionId: string) => {
-        setOpenSections(prev => ({
-          ...prev,
-          [sectionId]: !prev[sectionId]
-        }));
-    };
+    // useEffect(() => {
+    //     if (checklist?.sections) {
+    //         const initialState: { [key: string]: boolean } = {};
+    //         Object.keys(checklist.sections).forEach((key) => {
+    //             initialState[key] = false;  // 기본값을 false로 설정
+    //         });
+    //         setOpenSections(initialState);
+    //     }
+    // }, [checklist]); // checklist가 변경될 때마다 실행
+
+    // const toggleSection = (sectionId: string) => {
+    //     setOpenSections(prev => ({
+    //       ...prev,
+    //       [sectionId]: !prev[sectionId]
+    //     }));
+    // };
     
     // 체크리스트 데이터
     const checklistData: ChecklistItem[] = [
@@ -182,6 +182,13 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
             ]
         },
     ];
+
+    const toggleSection = (sectionId: string) => {
+        setOpenSections((prev) => ({
+            ...prev,
+            [sectionId]: !prev[sectionId]
+        }));
+    };
 
     return (
         <div>
