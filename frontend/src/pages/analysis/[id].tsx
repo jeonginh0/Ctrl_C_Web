@@ -1,6 +1,6 @@
 import AnalysisResultMain from '@/components/containers/Analysis/AnalysisResult/AnalysisResultMain'
 
-export default function Analysis() {
+export default function AnalysisResult() {
     return (
         <main>
             <AnalysisResultMain />
