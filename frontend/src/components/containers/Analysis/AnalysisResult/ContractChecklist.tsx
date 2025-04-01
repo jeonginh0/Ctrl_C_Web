@@ -3,11 +3,11 @@ import styles from '@/styles/ContractChecklist.module.css'
 
 type ChecklistItem = {
     title: string;
-    status: 'true' | 'false';
+    status: boolean; // 'true' | 'false' → boolean 타입으로 수정
     items?: Array<{
-        status: 'true' | 'false';
+        status: boolean; // 'true' | 'false' → boolean 타입으로 수정
         content: string;
-        boundingBox: []
+        boundingBox: Array<{ x: number; y: number }>; // boundingBox 타입 정의
     }>;
 };
 
@@ -22,19 +22,19 @@ const ChecklistSection: React.FC<{ item: ChecklistItem; isOpen: boolean; toggle:
         <div className={styles.section} id={id}>
             <div className={styles.sectionHeader} onClick={toggle}>
                 <div className={styles.sectionTitle}>
-                    <div className={`${styles.statusIcon} ${item.status === 'true' ? styles.true : styles.false}`} />
+                    <div className={`${styles.statusIcon} ${item.status ? styles.true : styles.false}`} />
                     {item.title}
                 </div>
-                <div 
-                    className={styles.dropdownIcon} 
-                    style={{ backgroundImage: `url('/icons/${isOpen ? "Arrow-Up.svg" : "Arrow-Down.svg"}')` }}
+                <div
+                    className={styles.dropdownIcon}
+                    style={{ backgroundImage: `url('/icons/${isOpen ? 'Arrow-Up.svg' : 'Arrow-Down.svg'}')` }}
                 />
             </div>
             {item.items && isOpen && (
                 <div className={styles.sectionItems}>
                     {item.items.map((subItem, index) => (
                         <div className={styles.checklistItem} key={index}>
-                            <div className={`${styles.smallCheckIcon} ${subItem.status === 'true' ? styles.true : styles.false}`} />
+                            <div className={`${styles.smallCheckIcon} ${subItem.status ? styles.true : styles.false}`} />
                             <span className={styles.detailText}>{subItem.content}</span>
                         </div>
                     ))}
@@ -56,11 +56,11 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
                 const section = value as ChecklistItem;
                 return {
                     title: key,
-                    status: section.status,
+                    status: section.status, // boolean 처리
                     items: section.items?.map((item) => ({
-                        status: item.status,
+                        status: item.status, // boolean 처리
                         content: item.content,
-                        boundingBox: [],
+                        boundingBox: item.boundingBox || [], // boundingBox 배열 처리
                     }))
                 };
             });

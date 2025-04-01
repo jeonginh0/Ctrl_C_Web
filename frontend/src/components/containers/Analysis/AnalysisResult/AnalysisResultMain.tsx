@@ -8,15 +8,22 @@ import styles from '@/styles/AnalysisResultMain.module.css';
 import apiClient from '@/ApiClient';  // axios 클라이언트 import
 
 type AnalysisData = {
-    checklist: Record<string, any>;
-    riskFactors: string | null;
-    missingFactors: string | null;
     image: string;
-    sections: Record<string, {
-        status: boolean;
-        content: string | null;
-        boundingBox: Array<{ x: number; y: number }>;
-    }>;
+    기본계약정보: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    보증금및월세조건: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    관리비및공과금부담명확화: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    시설및수리책임조항: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    전세계약시추가확인사항: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    반전세계약시추가확인사항: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    계약해지및갱신조건명시: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    특약사항명시: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    위험요인: string | null;
+    누락요소: string | null;
+    법률단어: string;
+    createdAt: string;
+    updatedAt: string;
+    _id: string;
+    userId: string;
 };
 
 const AnalysisResultMain: React.FC = () => {
@@ -71,14 +78,14 @@ const AnalysisResultMain: React.FC = () => {
         const components: Record<string, JSX.Element> = {
             '전체 분석 내용': (
                 <div>
-                    <ContractChecklist checklist={analysisData?.checklist || {}} />
-                    <RiskFactors riskFactors={analysisData?.riskFactors || null} />
-                    <MissingFactors missingFactors={analysisData?.missingFactors || null} />
+                    <ContractChecklist checklist={analysisData?.기본계약정보 || {}} />
+                    <RiskFactors riskFactors={analysisData?.위험요인 || null} />
+                    <MissingFactors missingFactors={analysisData?.누락요소 || null} />
                 </div>
             ),
-            '계약서 체크리스트': <ContractChecklist checklist={analysisData?.checklist || {}} />,
-            '위험 요인': <RiskFactors riskFactors={analysisData?.riskFactors || null} />,
-            '누락 요소': <MissingFactors missingFactors={analysisData?.missingFactors || null} />
+            '계약서 체크리스트': <ContractChecklist checklist={analysisData?.기본계약정보 || {}} />,
+            '위험 요인': <RiskFactors riskFactors={analysisData?.위험요인 || null} />,
+            '누락 요소': <MissingFactors missingFactors={analysisData?.누락요소 || null} />
         };
 
         return components[activeTab] || null;
