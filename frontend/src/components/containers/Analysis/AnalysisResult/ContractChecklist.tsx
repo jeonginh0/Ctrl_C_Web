@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import styles from '@/styles/ContractChecklist.module.css'
+import React, { useState, useEffect } from 'react';
+import styles from '@/styles/ContractChecklist.module.css';
 
 type ChecklistItem = {
     title: string;
@@ -17,7 +17,9 @@ type ContractChecklistProps = {
 };
 
 // 체크리스트 섹션 컴포넌트
-const ChecklistSection: React.FC<{ item: ChecklistItem; isOpen: boolean; toggle: () => void; id: string }> = ({ item, isOpen, toggle, id }) => {
+const ChecklistSection: React.FC<{ item: ChecklistItem; isOpen: boolean; toggle: () => void; id: string }> = ({
+    item, isOpen, toggle, id,
+}) => {
     return (
         <div className={styles.section} id={id}>
             <div className={styles.sectionHeader} onClick={toggle}>
@@ -65,7 +67,6 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
                 };
             });
             
-            console.log(apiData);
             setApiData(sectionsData);
             setLoading(false);
         } else {
