@@ -26,7 +26,37 @@ export class Analysis {
   image: string;
 
   @Prop({ type: Map, of: SectionSchema })
-  sections: Record<string, Section>;
+  기본계약정보: Record<string, Section>;
+
+  @Prop({ type: Map, of: SectionSchema })
+  보증금및월세조건: Record<string, Section>;
+
+  @Prop({ type: Map, of: SectionSchema })
+  관리비및공과금부담명확화: Record<string, Section>;
+
+  @Prop({ type: Map, of: SectionSchema })
+  시설및수리책임조항: Record<string, Section>;
+
+  @Prop({ type: Map, of: SectionSchema })
+  전세계약시추가확인사항: Record<string, Section>;
+
+  @Prop({ type: Map, of: SectionSchema })
+  반전세계약시추가확인사항: Record<string, Section>;
+
+  @Prop({ type: Map, of: SectionSchema })
+  계약해지및갱신조건명시: Record<string, Section>;
+
+  @Prop({ type: Map, of: SectionSchema })
+  특약사항명시: Record<string, Section>;
+
+  @Prop()
+  위험요인?: string;
+
+  @Prop()
+  누락요소?: string;
+
+  @Prop()
+  법률단어?: string;
 }
 
 export const AnalysisSchema = SchemaFactory.createForClass(Analysis);
