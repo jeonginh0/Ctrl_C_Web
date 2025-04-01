@@ -51,7 +51,7 @@ const AnalysisResultMain: React.FC = () => {
 
     useEffect(() => {
         if (!id || !token) return;
-    
+
         const fetchAnalysisData = async () => {
             try {
                 const response = await apiClient.get(`/analysis/${id}`, {
@@ -59,7 +59,6 @@ const AnalysisResultMain: React.FC = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log(response);
                 setAnalysisData(response.data);
             } catch (error) {
                 setError('데이터를 가져오는 데 실패했습니다.');
@@ -67,13 +66,14 @@ const AnalysisResultMain: React.FC = () => {
                 setLoading(false);
             }
         };
-    
+
         fetchAnalysisData();
     }, [id, token]);
 
     if (loading) return <p>로딩 중...</p>;
     if (error) return <p>{error}</p>;
 
+    
     const renderTabContent = () => {
         const components: Record<string, JSX.Element> = {
             '전체 분석 내용': (

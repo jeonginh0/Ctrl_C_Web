@@ -64,7 +64,8 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
                     }))
                 };
             });
-
+            
+            console.log(apiData);
             setApiData(sectionsData);
             setLoading(false);
         } else {
