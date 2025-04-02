@@ -13,7 +13,6 @@ export type ChecklistItem = {
 // ContractChecklist 컴포넌트의 Props 타입 정의
 export type ContractChecklistProps = {
     checklist: Record<string, Record<string, ChecklistItem>>;
-    onHighlight: (boundingBox: Array<{ x: number; y: number }>) => void;
 };
 
 // 카테고리 이름을 한글로 변환하는 매핑
@@ -28,7 +27,7 @@ const categoryNameMapping: Record<string, string> = {
     '특약사항명시': '특약 사항 명시'
 };
 
-const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist, onHighlight }) => {
+const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
     const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
     // 카테고리 토글 함수
@@ -55,10 +54,6 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist, onHigh
         '계약해지및갱신조건명시',
         '특약사항명시',
     ];
-
-    const handleItemClick = (boundingBox: Array<{ x: number; y: number }>) => {
-        onHighlight(boundingBox);
-    };
 
     // 존재하는 카테고리만 필터링하고 순서대로 정렬
     const orderedCategories = categoryOrder
@@ -102,7 +97,6 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist, onHigh
                                     <div
                                         key={key}
                                         className={styles.checklistItem}
-                                        onClick={() => handleItemClick(item.boundingBox)}
                                     >
                                         <img 
                                             src={item.status ? "/icons/CheckBox.svg" : "/icons/Xbox.svg"} 

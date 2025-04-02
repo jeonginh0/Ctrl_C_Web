@@ -53,12 +53,6 @@ const AnalysisResultMain: React.FC = () => {
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('전체 분석 내용');
     const [token, setToken] = useState<string | null>(null);
-    const [highlightedBox, setHighlightedBox] = useState<{ x: number; y: number }[] | null>(null);
-    const [selectedBox, setSelectedBox] = useState<Array<{ x: number; y: number }> | null>(null);
-
-    const handleHighlight = (boundingBox: Array<{ x: number; y: number }>) => {
-        setSelectedBox(boundingBox);
-    };
     
     const tabs = [
         '전체 분석 내용',
@@ -141,12 +135,12 @@ const AnalysisResultMain: React.FC = () => {
         const components = {
             '전체 분석 내용': (
                 <div className={styles.fullAnalysis}>
-                    <ContractChecklist checklist={checklistData} onHighlight={handleHighlight} />
+                    <ContractChecklist checklist={checklistData} />
                     <RiskFactors riskFactors={analysisData?.위험요인 || null} />
                     <MissingFactors missingFactors={analysisData?.누락요소 || null} />
                 </div>
             ),
-            '계약서 체크리스트': <ContractChecklist checklist={checklistData} onHighlight={handleHighlight} />,
+            '계약서 체크리스트': <ContractChecklist checklist={checklistData} />,
             '위험 요인': <RiskFactors riskFactors={analysisData?.위험요인 || null} />,
             '누락 요소': <MissingFactors missingFactors={analysisData?.누락요소 || null} />
         };
@@ -218,7 +212,6 @@ const AnalysisResultMain: React.FC = () => {
                                     alt="계약서 이미지"
                                     className={styles.contractImage}
                                 />
-                                {selectedBox && <HighlightOverlay boundingBox={selectedBox} imageRef={imageRef}/>}
                             </div>
                         ) : (
                             <p>업로드된 계약서가 여기에 표시됩니다.</p>
@@ -247,51 +240,6 @@ const AnalysisResultMain: React.FC = () => {
                 </div>
             </div>
         </div>
-    );
-};
-
-const HighlightOverlay: React.FC<{ boundingBox: Array<{ x: number; y: number }>, imageRef: React.RefObject<HTMLImageElement | null> }> = ({ boundingBox, imageRef }) => {
-    const [scaledBox, setScaledBox] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
-
-    useEffect(() => {
-        if (!imageRef.current || boundingBox.length < 2) return;
-
-        const img = imageRef.current;
-        const imageRect = img.getBoundingClientRect(); // 이미지의 화면 상 실제 위치 정보
-
-        const { naturalWidth, naturalHeight, clientWidth, clientHeight } = img;
-        const scaleX = clientWidth / naturalWidth;
-        const scaleY = clientHeight / naturalHeight;
-
-        const minX = Math.min(...boundingBox.map((point) => point.x)) * scaleX + imageRect.left;
-        const maxX = Math.max(...boundingBox.map((point) => point.x)) * scaleX + imageRect.left;
-        const minY = Math.min(...boundingBox.map((point) => point.y)) * scaleY + imageRect.top;
-        const maxY = Math.max(...boundingBox.map((point) => point.y)) * scaleY + imageRect.top;
-
-        setScaledBox({
-            x: minX,
-            y: minY,
-            width: maxX - minX,
-            height: maxY - minY
-        });
-    }, [boundingBox, imageRef]);
-
-    if (!scaledBox) return null;
-
-    return (
-        <div
-            className={styles.highlightBox}
-            style={{
-                position: 'absolute',
-                left: `${scaledBox.x}px`,
-                top: `${scaledBox.y}px`,
-                width: `${scaledBox.width}px`,
-                height: `${scaledBox.height}px`,
-                border: '2px solid red',
-                backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                pointerEvents: 'none',
-            }}
-        />
     );
 };
 
