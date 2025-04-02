@@ -1,104 +1,120 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from '@/styles/ContractChecklist.module.css';
 
-type ChecklistItem = {
+// ChecklistItem 타입 정의
+export type ChecklistItem = {
     title: string;
     status: boolean;
-    items?: Array<{
-        status: boolean;
-        content: string;
-        boundingBox: Array<{ x: number; y: number }>;
-    }>;
+    content: string;
+    boundingBox: Array<{ x: number; y: number }>;
+    _id: string;
 };
 
-// API에서 반환된 데이터 타입 정의
-type ContractChecklistProps = {
-    checklist: Record<string, any>;
+// ContractChecklist 컴포넌트의 Props 타입 정의
+export type ContractChecklistProps = {
+    checklist: Record<string, Record<string, ChecklistItem>>;
+    onHighlight: (boundingBox: Array<{ x: number; y: number }>) => void;
 };
 
-// 체크리스트 섹션 컴포넌트
-const ChecklistSection: React.FC<{ item: ChecklistItem; isOpen: boolean; toggle: () => void; id: string }> = ({
-    item, isOpen, toggle, id,
-}) => {
-    return (
-        <div className={styles.section} id={id}>
-            <div className={styles.sectionHeader} onClick={toggle}>
-                <div className={styles.sectionTitle}>
-                    <div className={`${styles.statusIcon} ${item.status ? styles.true : styles.false}`} />
-                    {item.title}
-                </div>
-                <div
-                    className={styles.dropdownIcon}
-                    style={{ backgroundImage: `url('/icons/${isOpen ? 'Arrow-Up.svg' : 'Arrow-Down.svg'}')` }}
-                />
-            </div>
-            {item.items && isOpen && (
-                <div className={styles.sectionItems}>
-                    {item.items.map((subItem, index) => (
-                        <div className={styles.checklistItem} key={index}>
-                            <div className={`${styles.smallCheckIcon} ${subItem.status ? styles.true : styles.false}`} />
-                            <span className={styles.detailText}>{subItem.content}</span>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
+// 카테고리 이름을 한글로 변환하는 매핑
+const categoryNameMapping: Record<string, string> = {
+    '기본계약정보': '기본 계약 정보',
+    '보증금및월세조건': '보증금 및 월세 조건',
+    '관리비및공과금부담명확화': '관리비 및 공과금 부담 명확화',
+    '시설및수리책임조항': '시설 및 수리 책임 조항',
+    '전세계약시추가확인사항': '전세 계약시 추가 확인사항',
+    '반전세계약시추가확인사항': '반전세 계약시 추가 확인사항',
+    '계약해지및갱신조건명시': '계약 해지 및 갱신 조건 명시',
+    '특약사항명시': '특약 사항 명시'
 };
 
-const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
-    const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({});
-    const [apiData, setApiData] = useState<ChecklistItem[]>([]); // API 데이터 상태 추가
-    const [loading, setLoading] = useState(true); // 로딩 상태 추가
-    const [error, setError] = useState<string | null>(null); // 에러 처리 상태
-    
-    useEffect(() => {
-        if (checklist?.sections) {
-            const sectionsData: ChecklistItem[] = Object.entries(checklist.sections).map(([key, value]) => {
-                const section = value as ChecklistItem;
-                return {
-                    title: key,
-                    status: section.status, // boolean 처리
-                    items: section.items?.map((item) => ({
-                        status: item.status, // boolean 처리
-                        content: item.content,
-                        boundingBox: item.boundingBox || [], // boundingBox 배열 처리
-                    }))
-                };
-            });
-            
-            setApiData(sectionsData);
-            setLoading(false);
-        } else {
-            setError('데이터 로딩에 실패했습니다.');
-            setLoading(false);
-        }
-    }, [checklist]);
+const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist, onHighlight }) => {
+    const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
-    const toggleSection = (sectionId: string) => {
-        setOpenSections((prev) => ({
+    // 카테고리 토글 함수
+    const toggleCategory = (category: string) => {
+        setExpandedCategories(prev => ({
             ...prev,
-            [sectionId]: !prev[sectionId],
+            [category]: !prev[category]
         }));
     };
+    
+    // 카테고리 상태 계산 (모든 항목이 참이면 카테고리도 참)
+    const getCategoryStatus = (items: Record<string, ChecklistItem>): boolean => {
+        return Object.values(items).every(item => item.status);
+    };
 
-    if (loading) return <div>로딩 중...</div>;
-    if (error) return <div>{error}</div>;
+    // 카테고리 순서 정의
+    const categoryOrder = [
+        '기본계약정보', 
+        '보증금및월세조건', 
+        '관리비및공과금부담명확화',
+        '시설및수리책임조항',
+        '전세계약시추가확인사항',
+        '반전세계약시추가확인사항',
+        '계약해지및갱신조건명시',
+        '특약사항명시',
+    ];
 
+    const handleItemClick = (boundingBox: Array<{ x: number; y: number }>) => {
+        onHighlight(boundingBox);
+    };
+
+    // 존재하는 카테고리만 필터링하고 순서대로 정렬
+    const orderedCategories = categoryOrder
+        .filter(category => category in checklist)
+        .map(category => ({
+            key: category,
+            displayName: categoryNameMapping[category] || category,
+            items: checklist[category],
+            status: getCategoryStatus(checklist[category])
+        }));
     return (
         <div className={styles.mainContent}>
             <h1 className={styles.title}>
                 계약서 체크리스트 <span className={styles.subtitle}>Contract Check-List</span>
             </h1>
-            <div className={styles.checklistContainer}>
-                {apiData.map((item, index) => (
-                    <ChecklistSection 
-                        key={index} 
-                        item={item} 
-                        isOpen={openSections[item.title] || false} 
-                        toggle={() => toggleSection(item.title)} 
-                        id={item.title} 
-                    />
+            <div className={styles.divider}></div>
+
+            <div className={styles.categoriesGrid}>
+                {orderedCategories.map((category) => (
+                    <div key={category.key} className={styles.categorySection}>
+                        <div 
+                            className={styles.categoryHeader} 
+                            onClick={() => toggleCategory(category.key)}
+                        >
+                            <img 
+                                src={category.status ? "/icons/CheckBox.svg" : "/icons/Xbox.svg"} 
+                                alt={category.status ? "체크됨" : "미체크"}
+                                className={styles.statusIcon}
+                            />
+                            <span className={styles.categoryName}>{category.displayName}</span>
+                            <img 
+                                src={expandedCategories[category.key] ? "/icons/Arrow-Up.svg" : "/icons/Arrow-Down.svg"} 
+                                alt={expandedCategories[category.key] ? "접기" : "펼치기"}
+                                className={styles.toggleIcon}
+                            />
+                        </div>
+                    
+                        {expandedCategories[category.key] && (
+                            <div className={styles.itemsContainer}>
+                                {Object.entries(category.items).map(([key, item]) => (
+                                    <div
+                                        key={key}
+                                        className={styles.checklistItem}
+                                        onClick={() => handleItemClick(item.boundingBox)}
+                                    >
+                                        <img 
+                                            src={item.status ? "/icons/CheckBox.svg" : "/icons/Xbox.svg"} 
+                                            alt={item.status ? "체크됨" : "미체크"}
+                                            className={styles.itemStatus}
+                                        />
+                                        <span className={styles.itemText}>{item.title}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 ))}
             </div>
         </div>

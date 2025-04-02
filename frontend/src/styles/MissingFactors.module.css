@@ -1,0 +1,43 @@
+.mainContent {
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 50px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #555;
+    font-weight: normal;
+}
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: #333; /* 원본처럼 진한 블랙 대신 연한 검은색 */
+    margin: 16px 0 24px 0;
+}
+
+.textBox {
+    display: flex;
+    border: 1.5px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 16px; /* 🔥 추가: 텍스트와 테두리 사이 여백 */
+    background-color: white; /* 🔥 추가: 배경색 추가 */
+}
+
+.textBox p {
+    font-size: 15px; /* 🔥 수정: 원본 이미지처럼 조금 더 키움 */
+    line-height: 1.6; /* 🔥 추가: 가독성을 위해 줄 간격 조정 */
+    color: #222; /* 🔥 추가: 검은색보다 살짝 연한 색상 */
+    margin: 0; /* 🔥 추가: p 태그 기본 마진 제거 */
+}

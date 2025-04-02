@@ -33,7 +33,7 @@
     height: 2px; /* 구분선의 두께 */
     background-color: #ccc; /* 구분선 색상 */
     margin: 10px auto 0;
-  }
+}
 
 .analysisContainer {
     display: grid;
@@ -69,6 +69,13 @@
     position: relative; /* 밑줄을 위한 포지셔닝 */
 }
 
+.contractImage {
+    width: 100%;  /* 부모 요소에 맞게 조정 */
+    max-width: 825px; /* 최대 너비 설정 */
+    height: auto;  /* 비율 유지하면서 크기 조정 */
+    border-radius: 10px;
+}
+
 .tabs::after {
     content: '';
     position: absolute;
@@ -88,7 +95,7 @@
     padding: 10px 15px;
     background-color: #E02424;
     color: white;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -156,4 +163,12 @@
 
 .chatbotButton:hover {
     background-color: #E02424;
+}
+
+.highlightBox {
+    position: absolute;
+    border: 2px solid red; /* 하이라이트 테두리 색상 */
+    background-color: rgba(255, 0, 0, 0.3); /* 반투명 배경 */
+    pointer-events: none; /* 클릭 이벤트 방지 */
+    z-index: 10; /* 이미지 위에 표시되도록 */
 }

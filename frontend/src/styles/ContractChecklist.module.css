@@ -1,132 +1,121 @@
 .mainContent {
     font-size: 25px;
     font-weight: 600;
+    margin-bottom: 80px;
 }
 
+  
 .title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid black;
-    padding-bottom: 10px;
-}
-
-.subtitle {
+    font-size: 28px;
     font-weight: bold;
-    margin-left: 10px;
-    font-size: 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
 }
-
-.horizontalLine {
+  
+.subtitle {
+    font-size: 18px;
+    color: #555;
+    font-weight: normal;
+}
+  
+.divider {
+    width: 100%;
     height: 1px;
     background-color: #000;
-    margin: 15px 0 25px 0;
-    width: 100%;
+    margin: 16px 0 24px 0;
+}
+
+/* 3열 그리드 레이아웃 추가 */
+.categoriesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3열 유지 */
+    gap: 30px;
+    align-items: start; /* 중요: 카테고리 높이 자동 조절 */
 }
   
-.checklistContainer {
+.categorySection {
     display: flex;
     flex-direction: column;
-    font-size: 10px;
-    gap: 20px;
+    align-self: start; /* 중요: 각 섹션을 개별적으로 정렬 */
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
 }
   
-.section {
-    /* border-bottom: 1px solid #eee; */
-    /* padding-bottom: 15px; */
-}
-  
-.sectionHeader {
+.categoryHeader {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    font-size: 11px;
+    padding: 11px;
+    background-color: #f9f9f9;
     cursor: pointer;
-    padding: 5px 0;
-    padding-bottom: 15px;
-    border-bottom: 1px solid black;
-}
-  
-.sectionTitle {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: bold;
-    font-size: 14px;
 }
   
 .statusIcon {
-    width: 21px;
-    height: 21px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-size: contain; /* 이미지가 요소 크기에 맞게 조정됨 */
-    background-repeat: no-repeat; /* 반복 방지 */
-    background-position: center;
-    flex-shrink: 0; /* 부모 요소 크기에 따라 변형되지 않도록 고정 */
+    color: white;
+    font-size: 16px;
+    margin-right: 12px;
+    flex-shrink: 0;
 }
   
-.true {
-    background-image: url('/icons/CheckBox.svg');
-    background-color: transparent;
+.statusTrue {
+    background-color: #4CD964;
 }
   
-.false {
-    background-image: url('/icons/XBox.svg');
-    background-color: transparent;
+.statusFalse {
+    background-color: #FF3B30;
 }
   
-.dropdownIcon {
-    width: 24px;
-    height: 24px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+.categoryName {
+    font-size: 14px;
+    font-weight: 650;
+    flex-grow: 1;
 }
   
-.sectionItems {
-    padding-left: px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 10px;
+.toggleIcon {
+    margin-left: auto;
+    color: #666;
+}
+  
+.itemsContainer {
+    padding: 10px;
 }
   
 .checklistItem {
     display: flex;
-    align-items: center; /* 아이콘과 텍스트를 같은 선상에 배치 */
-    gap: 8px; /* 아이콘과 텍스트 사이 간격 조정 */
+    align-items: center;
+    padding: 6px 0;
 }
-
-.smallCheckIcon {
-    width: 15px; /* 작은 체크박스 크기 */
+  
+.itemStatus {
+    width: 15px;
     height: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    flex-shrink: 0;
+    color: white;
+    margin-right: 10px;
+}
+  
+.itemText {
+    font-size: 12px;
 }
 
-.detailText {
-    font-size: 11px;
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 1024px) {
+    .categoriesGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
-  
-.itemRow {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
-    /* border-bottom: 1px solid #eee; */
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-}
-  
-  /* 반응형 디자인 */
+
 @media (max-width: 768px) {
-    .itemRow {
-      grid-template-columns: 1fr;
+    .categoriesGrid {
+        grid-template-columns: 1fr;
     }
 }
