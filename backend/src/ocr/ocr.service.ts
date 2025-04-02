@@ -30,14 +30,14 @@ export class OcrService {
         try {
             console.log('📌 파일 타입:', fileType);
 
-            const processedImage = await this.processImage(imageBuffer, fileType);
+            const processedImageData = await this.processImage(imageBuffer, fileType);
             const contractName = `${uuidv4()}.${this.getFileFormat(fileType)}`;
             const contractPath = path.join(this.uploadPath, contractName);
 
             const format = this.getFileFormat(fileType);
             console.log('📌 변환된 파일 형식:', format);
 
-            fs.writeFileSync(contractPath, processedImage);
+            fs.writeFileSync(contractPath, processedImageData.buffer);
             
             const requestJson = {
                 images: [{ format, name: 'contract' }],
@@ -77,6 +77,8 @@ export class OcrService {
                     userId: new Types.ObjectId(userId),
                     data: groupedText,
                     image: relativeContractPath,
+                    imageWidth: processedImageData.width,
+                    imageHeight: processedImageData.height
                 }).save();
 
                 console.log('📌 MongoDB 저장 성공:', savedResult);
@@ -146,11 +148,22 @@ export class OcrService {
         ];
     }
 
-    private async processImage(imageBuffer: Buffer, fileType: string): Promise<Buffer> {
+    private async processImage(imageBuffer: Buffer, fileType: string): Promise<{ buffer: Buffer, width: number, height: number }> {
         try {
-            return await sharp(imageBuffer)
+            // 원본 이미지 크기 가져오기
+            const metadata = await sharp(imageBuffer).metadata();
+            
+            // 리사이징된 이미지 생성
+            const resizedBuffer = await sharp(imageBuffer)
                 .resize({ width: 1080 })
                 .toBuffer();
+                
+            return {
+                buffer: resizedBuffer,
+                // 리사이징된 실제 크기 계산 (가로 비율에 맞춰 세로 크기 조정)
+                width: 1080,
+                height: metadata.height ? Math.round((1080 / metadata.width!) * metadata.height) : 0
+            };
         } catch (error) {
             console.error('📌 이미지 처리 실패:', error.message);
             throw new InternalServerErrorException('이미지 처리 중 오류가 발생했습니다.');

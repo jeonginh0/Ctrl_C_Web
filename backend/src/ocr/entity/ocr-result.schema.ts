@@ -16,6 +16,12 @@ export class OcrResult extends Document {
 
     @Prop({ required: true })
     image: string;
+
+    @Prop({ type: Number, required: true })
+    imageWidth: number;
+  
+    @Prop({ type: Number, required: true })
+    imageHeight: number;
 }
 
 export const OcrResultSchema = SchemaFactory.createForClass(OcrResult);

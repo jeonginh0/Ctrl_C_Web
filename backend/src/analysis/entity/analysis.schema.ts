@@ -25,6 +25,12 @@ export class Analysis {
   @Prop({ required: true })
   image: string;
 
+  @Prop({ type: Number })
+  imageWidth: number;
+  
+  @Prop({ type: Number })
+  imageHeight: number;
+
   @Prop({ type: Map, of: SectionSchema })
   기본계약정보: Record<string, Section>;
 

@@ -42,8 +42,12 @@ export class AnalysisService {
 
     const ocrTexts = ocrData.data || [];
     const imagePath = ocrData.image;
+    const imageWidth = ocrData.imageWidth; // 이미지 너비 가져오기
+    const imageHeight = ocrData.imageHeight; // 이미지 높이 가져오기
+
     console.log('📄 OCR 데이터 개수:', ocrTexts.length);
     console.log('🖼️ 이미지 경로:', imagePath);
+    console.log('📐 이미지 크기:', imageWidth, 'x', imageHeight);
 
     // GPT에게 분석 요청
     const gptResponse = await this.analyzeWithGPT(ocrTexts);
@@ -60,6 +64,8 @@ export class AnalysisService {
     const contractAnalysis = new this.analysisModel({
       userId: objectId,
       image: imagePath,
+      imageWidth, // 이미지 너비 추가
+      imageHeight, // 이미지 높이 추가
       ...analysisData,  // 각 계약서 항목의 분석 결과를 객체 형태로 저장
     });
 
