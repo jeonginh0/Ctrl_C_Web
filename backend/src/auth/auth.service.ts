@@ -124,8 +124,8 @@ export class AuthService {
         throw new Error('JWT_SECRET이 정의되지 않았습니다.');
       }
 
-      const payload = { email: user.email, role: user.role };
-      const token = jwt.sign(payload, this.JWT_SECRET, {expiresIn: '12h'});
+      const payload = { _id: user._id, email: user.email, role: user.role };
+      const token = jwt.sign(payload, this.JWT_SECRET, { expiresIn: '12h' });
 
       return { token, user };
     } catch (error) {
@@ -194,5 +194,18 @@ export class AuthService {
     const token = jwt.sign(payload, this.JWT_SECRET, { expiresIn: '12h' });
 
     return { updatedUser, token };  // 반환 타입 수정
+  }
+  
+  // 회원탈퇴
+  async deleteUser(email: string): Promise<{ message: string }> {
+    const user = await this.userModel.findOne({ email }).exec();
+    
+    if (!user) {
+      throw new HttpException('사용자를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+    }
+  
+    await this.userModel.deleteOne({ email }).exec();
+    
+    return { message: '회원탈퇴가 완료되었습니다.' };
   }
 }

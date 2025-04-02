@@ -3,11 +3,11 @@ import styles from '@/styles/ContractChecklist.module.css';
 
 type ChecklistItem = {
     title: string;
-    status: boolean; // 'true' | 'false' → boolean 타입으로 수정
+    status: boolean;
     items?: Array<{
-        status: boolean; // 'true' | 'false' → boolean 타입으로 수정
+        status: boolean;
         content: string;
-        boundingBox: Array<{ x: number; y: number }>; // boundingBox 타입 정의
+        boundingBox: Array<{ x: number; y: number }>;
     }>;
 };
 

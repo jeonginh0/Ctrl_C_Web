@@ -26,16 +26,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // validate 메서드에서 JWT Payload 기반으로 사용자 정보를 조회
-  async validate(payload: { email: string; role: string }): Promise<User> {
+  async validate(payload: { email: string; role: string }) {
     try {
       const user = await this.userModel.findOne({ email: payload.email });
-
-      // 유저가 없으면 오류 처리
+  
       if (!user) {
         throw new Error('User not found');
       }
-
-      return user;
+  
+      console.log('✅ JWT 검증 완료:', user);
+  
+      return {
+        userId: user._id,
+        email: user.email,
+        role: user.role,
+      };
     } catch (error) {
       throw new Error(`Error during validation: ${error.message}`);
     }

@@ -7,16 +7,25 @@ import MissingFactors from './MissingFactors';
 import styles from '@/styles/AnalysisResultMain.module.css';
 import apiClient from '@/ApiClient';  // axios 클라이언트 import
 
+type SectionData = Record<
+    string,
+    {
+        status: boolean;
+        content: string | null;
+        boundingBox: Array<{ x: number; y: number }>;
+    }
+>;
+
 type AnalysisData = {
     image: string;
-    기본계약정보: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
-    보증금및월세조건: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
-    관리비및공과금부담명확화: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
-    시설및수리책임조항: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
-    전세계약시추가확인사항: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
-    반전세계약시추가확인사항: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
-    계약해지및갱신조건명시: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
-    특약사항명시: Record<string, { status: boolean, content: string | null, boundingBox: Array<{ x: number; y: number }> }>;
+    기본계약정보: SectionData;
+    보증금및월세조건: SectionData;
+    관리비및공과금부담명확화: SectionData;
+    시설및수리책임조항: SectionData;
+    전세계약시추가확인사항: SectionData;
+    반전세계약시추가확인사항: SectionData;
+    계약해지및갱신조건명시: SectionData;
+    특약사항명시: SectionData;
     위험요인: string | null;
     누락요소: string | null;
     법률단어: string;
