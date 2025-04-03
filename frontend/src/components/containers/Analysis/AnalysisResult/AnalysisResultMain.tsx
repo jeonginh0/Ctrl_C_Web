@@ -78,7 +78,7 @@ const AnalysisResultMain: React.FC = () => {
     
         const fetchAnalysisData = async () => {
             try {
-                const response = await apiClient.get(`/analysis/${id}`, {
+                const response = await apiClient.get(`/analysis/result/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
