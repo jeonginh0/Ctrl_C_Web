@@ -58,7 +58,6 @@ const AnalysisResultMain: React.FC = () => {
     const [activeTab, setActiveTab] = useState('전체 분석 내용');
     const [token, setToken] = useState<string | null>(null);
     const [highlightedBox, setHighlightedBox] = useState<Array<{ x: number; y: number }> | null>(null);
-    const [boxStyle, setBoxStyle] = useState<React.CSSProperties | null>(null);
     
     const tabs = [
         '전체 분석 내용',
@@ -196,14 +195,6 @@ const AnalysisResultMain: React.FC = () => {
 
     const handleHighlight = (boundingBox: BoundingBox[] | null) => {
         setHighlightedBox(boundingBox);
-    
-        if (!boundingBox || boundingBox.length === 0 || !imageRef.current) return;
-    
-        const minY = Math.min(...boundingBox.map(box => box.y));
-        imageRef.current.scrollTo({
-            top: minY - 50,
-            behavior: 'smooth',
-        });
     };
 
     const renderBoundingBoxes = () => {
