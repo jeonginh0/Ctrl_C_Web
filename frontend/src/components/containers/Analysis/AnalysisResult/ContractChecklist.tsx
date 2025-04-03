@@ -59,7 +59,16 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist, onHigh
 
     const handleItemClick = (item: ChecklistItem) => {
         onHighlight(item.boundingBox);
-        setSelectedItemId(item._id); // 클릭한 항목의 ID 저장
+        setSelectedItemId(item._id);
+    
+        const imageContainer = document.getElementById('image-container');
+        if (imageContainer && item.boundingBox.length > 0) {
+            const minY = Math.min(...item.boundingBox.map(box => box.y));
+            imageContainer.scrollTo({
+                top: minY - 50,
+                behavior: 'smooth',
+            });
+        }
     };
 
     // 존재하는 카테고리만 필터링하고 순서대로 정렬

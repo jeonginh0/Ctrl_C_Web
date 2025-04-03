@@ -194,9 +194,16 @@ const AnalysisResultMain: React.FC = () => {
 
     const baseURL = 'http://localhost:3000';
 
-    // ContractChecklist에서 boundingBox를 전달받는 함수
     const handleHighlight = (boundingBox: BoundingBox[] | null) => {
         setHighlightedBox(boundingBox);
+    
+        if (!boundingBox || boundingBox.length === 0 || !imageRef.current) return;
+    
+        const minY = Math.min(...boundingBox.map(box => box.y));
+        imageRef.current.scrollTo({
+            top: minY - 50,
+            behavior: 'smooth',
+        });
     };
 
     const renderBoundingBoxes = () => {
