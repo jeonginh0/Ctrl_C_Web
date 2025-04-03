@@ -33,7 +33,9 @@ export class AnalysisService {
     console.log('🔍 변환된 ObjectId:', objectId);
 
     // 로그인한 유저의 최신 OCR 결과 가져오기
-    const ocrData = await this.ocrResultModel.find().sort({ createdAt: -1 }).limit(1)[0]
+    const ocrData = await this.ocrResultModel
+      .findOne({ userId: objectId })
+      .sort({ createdAt: -1 });
 
     if (!ocrData) {
       console.warn(`⚠️ 해당 사용자의 OCR 데이터를 찾을 수 없습니다. userId: ${userId}`);
@@ -156,7 +158,8 @@ export class AnalysisService {
           - 입력된 계약서 데이터에 존재하고 명확하다면 "status": true
           - 입력된 계약서 데이터에 없다면 "status": false
         - **각 항목에 대한 관련 내용을 "content"에 반환하세요.**
-          - 입력된 계약서 데이터에서 찾은 해당 내용을 그대로 반환합니다.  
+          - 입력된 계약서 데이터에서 찾은 해당 내용을 그대로 반환합니다.
+          - 이때, 내용이 존재한다면 추출하지 말고 그 내용이 포함된 전체 문장을 반환합니다. 또한, 내용을 조합하여 생성하지마세요.
           - 만약 내용이 없다면 "content": null을 반환합니다.
 
         [체크리스트]
