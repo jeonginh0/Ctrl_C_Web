@@ -88,14 +88,6 @@ export default function Header() {
                     </li>
                     <li>
                         <Link 
-                            href="/description"
-                            className={pathname === '/description' ? styles.active : ''}
-                        >
-                        계약 법률 설명
-                        </Link>
-                    </li>
-                    <li>
-                        <Link 
                             href="/faq"
                             className={pathname === '/faq' ? styles.active : ''}
                         >
