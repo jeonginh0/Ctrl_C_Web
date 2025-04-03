@@ -33,7 +33,7 @@ export class AnalysisService {
     console.log('🔍 변환된 ObjectId:', objectId);
 
     // 로그인한 유저의 최신 OCR 결과 가져오기
-    const ocrData = await this.ocrResultModel.findOne({ userId: objectId }).sort({ createdAt: -1 });
+    const ocrData = await this.ocrResultModel.find().sort({ createdAt: -1 }).limit(1)[0]
 
     if (!ocrData) {
       console.warn(`⚠️ 해당 사용자의 OCR 데이터를 찾을 수 없습니다. userId: ${userId}`);
