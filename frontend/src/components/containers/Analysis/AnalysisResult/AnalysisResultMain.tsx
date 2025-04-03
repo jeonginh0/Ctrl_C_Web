@@ -9,6 +9,8 @@ import apiClient from '@/ApiClient';  // axios 클라이언트 import
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+type BoundingBox = { x: number; y: number; };
+
 type SectionData = {
     status: boolean;
     content: string | null;
@@ -27,6 +29,8 @@ type ChecklistItem = {
 
 type AnalysisData = {
     image: string;
+    imageWidth: number;
+    imageHeight: number;
     기본계약정보?: Record<string, SectionData>;
     보증금및월세조건?: Record<string, SectionData>;
     관리비및공과금부담명확화?: Record<string, SectionData>;
@@ -53,6 +57,8 @@ const AnalysisResultMain: React.FC = () => {
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('전체 분석 내용');
     const [token, setToken] = useState<string | null>(null);
+    const [highlightedBox, setHighlightedBox] = useState<Array<{ x: number; y: number }> | null>(null);
+    const [boxStyle, setBoxStyle] = useState<React.CSSProperties | null>(null);
     
     const tabs = [
         '전체 분석 내용',
@@ -135,12 +141,12 @@ const AnalysisResultMain: React.FC = () => {
         const components = {
             '전체 분석 내용': (
                 <div className={styles.fullAnalysis}>
-                    <ContractChecklist checklist={checklistData} />
+                    <ContractChecklist checklist={checklistData} onHighlight={handleHighlight} />
                     <RiskFactors riskFactors={analysisData?.위험요인 || null} />
                     <MissingFactors missingFactors={analysisData?.누락요소 || null} />
                 </div>
             ),
-            '계약서 체크리스트': <ContractChecklist checklist={checklistData} />,
+            '계약서 체크리스트': <ContractChecklist checklist={checklistData} onHighlight={handleHighlight} />,
             '위험 요인': <RiskFactors riskFactors={analysisData?.위험요인 || null} />,
             '누락 요소': <MissingFactors missingFactors={analysisData?.누락요소 || null} />
         };
@@ -188,6 +194,45 @@ const AnalysisResultMain: React.FC = () => {
 
     const baseURL = 'http://localhost:3000';
 
+    // ContractChecklist에서 boundingBox를 전달받는 함수
+    const handleHighlight = (boundingBox: BoundingBox[] | null) => {
+        setHighlightedBox(boundingBox);
+    };
+
+    const renderBoundingBoxes = () => {
+        if (!highlightedBox || highlightedBox.length === 0 || !imageRef.current || !analysisData) return null;
+    
+        const imgElement = imageRef.current;
+        const scaleX = imgElement.clientWidth / imgElement.naturalWidth;
+        const scaleY = imgElement.clientHeight / imgElement.naturalHeight;
+    
+        const minX = Math.min(...highlightedBox.map(box => box.x)) * scaleX;
+        const minY = Math.min(...highlightedBox.map(box => box.y)) * scaleY;
+        const maxX = Math.max(...highlightedBox.map(box => box.x)) * scaleX;
+        const maxY = Math.max(...highlightedBox.map(box => box.y)) * scaleY;
+    
+        const width = maxX - minX;
+        const height = maxY - minY;
+    
+        return (
+            <div
+                className={styles.highlightBox}
+                style={{
+                    left: `${minX}px`,
+                    top: `${minY}px`,
+                    width: `${width}px`,
+                    height: `${height}px`,
+                    position: 'absolute',
+                    border: '2px solid rgba(255, 0, 0, 0.7)',
+                    borderRadius: '12px',
+                    boxShadow: '0 0 8px rgba(255, 0, 0, 0.5)',
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                    pointerEvents: 'none',
+                }}
+            />
+        );
+    };
+    
     return (
         <div className={styles.container}>
             <div className={styles.logo}>
@@ -212,6 +257,7 @@ const AnalysisResultMain: React.FC = () => {
                                     alt="계약서 이미지"
                                     className={styles.contractImage}
                                 />
+                                {renderBoundingBoxes()}
                             </div>
                         ) : (
                             <p>업로드된 계약서가 여기에 표시됩니다.</p>

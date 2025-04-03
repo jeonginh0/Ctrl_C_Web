@@ -13,6 +13,7 @@ export type ChecklistItem = {
 // ContractChecklist 컴포넌트의 Props 타입 정의
 export type ContractChecklistProps = {
     checklist: Record<string, Record<string, ChecklistItem>>;
+    onHighlight: (boundingBox: Array<{ x: number; y: number }> | null) => void;
 };
 
 // 카테고리 이름을 한글로 변환하는 매핑
@@ -27,9 +28,10 @@ const categoryNameMapping: Record<string, string> = {
     '특약사항명시': '특약 사항 명시'
 };
 
-const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
+const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist, onHighlight }) => {
     const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-
+    const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+    
     // 카테고리 토글 함수
     const toggleCategory = (category: string) => {
         setExpandedCategories(prev => ({
@@ -54,6 +56,11 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
         '계약해지및갱신조건명시',
         '특약사항명시',
     ];
+
+    const handleItemClick = (item: ChecklistItem) => {
+        onHighlight(item.boundingBox);
+        setSelectedItemId(item._id); // 클릭한 항목의 ID 저장
+    };
 
     // 존재하는 카테고리만 필터링하고 순서대로 정렬
     const orderedCategories = categoryOrder
@@ -97,13 +104,19 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist }) => {
                                     <div
                                         key={key}
                                         className={styles.checklistItem}
+                                        onClick={() => handleItemClick(item)}
                                     >
                                         <img 
                                             src={item.status ? "/icons/CheckBox.svg" : "/icons/Xbox.svg"} 
                                             alt={item.status ? "체크됨" : "미체크"}
                                             className={styles.itemStatus}
                                         />
-                                        <span className={styles.itemText}>{item.title}</span>
+                                        <span 
+                                            className={`${styles.itemText} ${item.status ? styles.clickable : styles.disabled}`} 
+                                            onClick={item.status ? () => handleItemClick(item) : undefined} 
+                                        >
+                                            {item.title}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
