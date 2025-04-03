@@ -14,7 +14,7 @@ export class AnalysisController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':analysisId')
+  @Get('/result/:analysisId')
   async getAnalysis(@Param('analysisId') analysisId: string, @Request() req) {
     const userId = req.user.userId;
     if (!userId) {
