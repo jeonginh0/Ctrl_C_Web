@@ -17,9 +17,12 @@ export class ChatRoomService {
         this.openai = new OpenAI({ apiKey: process.env.GPT_API_KEY });
     }
 
-    async createChatRoom(userId: string, title: string, analysisId?: string) {
+    async createChatRoom(userId: string, analysisId?: string) {
         const thread = await this.openai.beta.threads.create();
-        
+    
+        const today = new Date();
+        const title = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일 상담`;
+    
         const chatRoom = new this.chatRoomModel({
             userId,
             title,
@@ -45,5 +48,4 @@ export class ChatRoomService {
     async findById(id: string) {
         return this.chatRoomModel.findById(id).populate('conversations');
     }
-
 }

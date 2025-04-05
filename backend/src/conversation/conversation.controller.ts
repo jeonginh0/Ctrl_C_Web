@@ -30,4 +30,10 @@ export class ConversationController {
     ) {
         return this.conversationService.regenerateLastAnswer(chatRoomId, dto.userId);
     }
+    
+    // 어시스턴트 생성
+    @Get('create-assistant')
+    async createAssistant() {
+        return this.conversationService.createAssistant();
+    }
 }

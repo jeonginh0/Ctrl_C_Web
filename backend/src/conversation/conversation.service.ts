@@ -40,15 +40,12 @@ export class ConversationService {
     
         if (analysisId) {
             try {
-                // 1. 직접 쿼리하되 lean() 옵션 사용
                 const analysis = await this.analysisModel.findById(analysisId).lean();
                 console.log("분석 데이터 찾음:", !!analysis);
                 
                 if (analysis) {
-                    // 2. 데이터를 문자열로 변환 후 다시 객체로 파싱 (참조 문제 해결)
                     const rawData = JSON.parse(JSON.stringify(analysis));
                     
-                    // 3. 명시적인 키 접근 시도
                     let contractSummary = `
                     [참고용 계약서 정보]
                     - 계약서 상 임대인 정보 확인: ${rawData['기본계약정보'] && rawData['기본계약정보']['계약서 상 임대인 정보 확인'] ? rawData['기본계약정보']['계약서 상 임대인 정보 확인']['content'] : "정보 없음"}
@@ -87,9 +84,13 @@ export class ConversationService {
             userId,
             userResponse: null,
             gptResponse: assistantMessage,
-            stdCreatedAt: new Date(),
+            userCreatedAt: new Date(),
             gptCreatedAt: new Date(),
         });
+
+        await this.chatRoomModel.findByIdAndUpdate(chatRoomId, {
+            $push: { conversations: newConversation._id }
+        });        
     
         return newConversation.gptResponse;
     }
@@ -103,13 +104,11 @@ export class ConversationService {
     
         const threadId = chatRoom.threadId;
     
-        // 계약서 분석 정보가 있는 경우, 이를 참조하여 사용
         const analysisId = chatRoom.analysisId;
         let analysisData;
         
         if (analysisId) {
             try {
-                // 계약서 분석 정보를 가져옴
                 analysisData = await this.analysisModel.findById(analysisId).lean();
                 if (!analysisData) {
                     console.log("계약서 분석 정보가 없습니다.");
@@ -119,7 +118,6 @@ export class ConversationService {
             }
         }
     
-        // 사용자 메시지 전송
         await this.openai.beta.threads.messages.create(threadId, {
             role: 'user',
             content: userResponse,
@@ -141,15 +139,18 @@ export class ConversationService {
             .find((c) => c.type === 'text') as any;
     
         const gptResponse = assistantReply?.text?.value ?? '응답이 없습니다.';
-    
-        // 계약서 정보를 답변 내용에 포함시키지 않음
+
         const newConversation = await this.conversationModel.create({
             chatRoomId,
             userId,
             userResponse,
-            gptResponse,  // 메시지 본문에 계약서 정보는 포함하지 않음
-            stdCreatedAt: new Date(),
+            gptResponse,
+            userCreatedAt: new Date(),
             gptCreatedAt: new Date(),
+        });
+
+        await this.chatRoomModel.findByIdAndUpdate(chatRoomId, {
+            $push: { conversations: newConversation._id }
         });
     
         return newConversation.gptResponse;
