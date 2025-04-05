@@ -144,7 +144,7 @@ export default function AnalysisMain() {
                 </Modal>
             )}
             <div className={styles.logo}>
-                <ImageWrapper src="/images/Sub_Header.svg" alt="Contract Document" width={1920} height={95} />
+                <ImageWrapper src="/images/Renalyze_Introduce.svg" alt="Contract Document" width={1920} height={95} />
             </div>
 
             <main className={styles.main}>

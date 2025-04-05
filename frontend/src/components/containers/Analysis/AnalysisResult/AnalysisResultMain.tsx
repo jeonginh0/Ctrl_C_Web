@@ -63,7 +63,7 @@ const AnalysisResultMain: React.FC = () => {
         '전체 분석 내용',
         '계약서 체크리스트',
         '위험 요인',
-        '누락 요소'
+        '누락 요인'
     ];
 
     useEffect(() => {
@@ -147,7 +147,7 @@ const AnalysisResultMain: React.FC = () => {
             ),
             '계약서 체크리스트': <ContractChecklist checklist={checklistData} onHighlight={handleHighlight} />,
             '위험 요인': <RiskFactors riskFactors={analysisData?.위험요인 || null} />,
-            '누락 요소': <MissingFactors missingFactors={analysisData?.누락요소 || null} />
+            '누락 요인': <MissingFactors missingFactors={analysisData?.누락요소 || null} />
         };
 
         return components[activeTab as keyof typeof components] || null;
@@ -235,7 +235,7 @@ const AnalysisResultMain: React.FC = () => {
         <div className={styles.container}>
             <div className={styles.logo}>
                 <Image
-                    src="/images/Sub_Header.svg"
+                    src="/images/Renalyze_Introduce.svg"
                     alt="Contract Document"
                     width={1920}
                     height={95}
