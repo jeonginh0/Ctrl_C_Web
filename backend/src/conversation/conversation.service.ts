@@ -27,7 +27,7 @@ export class ConversationService {
 
     async createAssistant() {
         const assistant = await this.openai.beta.assistants.create({
-                name: `컨씨`,
+                name: `레디`,
                 instructions: chatbotPrompt,
                 model: 'gpt-4o-mini',
             });
@@ -36,7 +36,7 @@ export class ConversationService {
     }
 
     async sendInitialMessage(userId: string, chatRoomId: string, analysisId: string | null, threadId: string) {
-        let assistantMessage = "안녕하세요! 부동산 전문가 컨씨입니다. 무엇을 도와드릴까요?";
+        let assistantMessage = "안녕하세요! 저는 부동산 관련 계약서 및 계약 후 문제에 대해 해결방안과 정보를 드리는 레디에요! 무엇을 도와드릴까요?";
     
         if (analysisId) {
             try {
