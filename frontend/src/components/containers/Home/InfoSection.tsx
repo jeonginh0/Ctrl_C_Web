@@ -36,8 +36,8 @@ const InfoSection: React.FC = () => {
         },
         {
             id: 'risk',
-            title: '위험요소·누락요소 검토',
-            content: '계약서를 분석하여 위험요소와 누락요소를 검토합니다.',
+            title: '위험요인·누락요인 검토',
+            content: '계약서를 분석하여 위험요인와 누락요인를 검토합니다.',
             iconSrc: '/images/Main_service2.png',
         },
         {
