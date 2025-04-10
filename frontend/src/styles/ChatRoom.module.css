@@ -46,6 +46,12 @@
     z-index: 10;
 }
 
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .headerTitle {
     font-size: 25px;
     font-weight: 800;
@@ -57,7 +63,6 @@
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    margin-right: 12px;
     object-fit: cover;
 }
 
@@ -69,6 +74,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 8px;
 }
 
 /* 반응형 스타일 */

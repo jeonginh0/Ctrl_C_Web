@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:3000',  // 기본 API 서버 URL
+  baseURL: 'http://localhost:3000',  // 백엔드 서버 URL
   headers: {
     'Content-Type': 'application/json',
   }
@@ -26,6 +26,5 @@ apiClient.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
 
 export default apiClient;
