@@ -9,6 +9,8 @@ import { OcrModule } from './ocr/ocr.module';
 import { OcrService } from './ocr/ocr.service';
 import { OcrResult, OcrResultSchema } from './ocr/entity/ocr-result.schema';
 import { AnalysisModule } from './analysis/analysis.module';
+import { ChatRoomModule } from './chatroom/chatroom.module';
+import { ConversationModule } from './conversation/conversation.module';
 
 @Module({
   imports: [
@@ -35,7 +37,9 @@ import { AnalysisModule } from './analysis/analysis.module';
     MongooseModule.forFeature([{ name: OcrResult.name, schema: OcrResultSchema }]),
     AuthModule,
     OcrModule,
-    AnalysisModule
+    AnalysisModule,
+    ChatRoomModule,
+    ConversationModule
   ],
   providers: [OcrService],
   exports: [OcrService],
