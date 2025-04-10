@@ -1,0 +1,160 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #ffffff;
+}
+
+.messageList {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #FDFDFF;
+}
+
+.messageWrapper {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.myMessageWrapper {
+    flex-direction: row-reverse;
+}
+
+.messageWithTimestamp {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1;
+}
+
+.myMessageWrapper .messageWithTimestamp {
+    align-items: flex-end;
+}
+
+.message {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.myMessage {
+    background-color: #F1787A;
+    color: white;
+}
+
+.otherMessage {
+    background-color: #ffffff;
+    color: #EF5D5F;
+    border: 1px solid #e9ecef;
+}
+
+.messageProfileImage {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.messageContent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.content {
+    margin: 0;
+    word-break: break-word;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+.timestamp {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    margin-top: 2px;
+}
+
+.myTimestamp {
+    text-align: right;
+    color: #6c757d;
+}
+
+.otherTimestamp {
+    text-align: left;
+    color: #6c757d;
+}
+
+.readStatus {
+    font-size: 0.7rem;
+    margin-left: 4px;
+    color: #6c757d;
+}
+
+.inputContainer {
+    display: flex;
+    gap: 10px;
+    padding: 16px;
+    border-top: 1px solid #EBDFDF;
+    background-color: #fff;
+}
+
+.messageInput {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #EBDFDF;
+    border-radius: 24px;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.messageInput:focus {
+    border-color: #F1787A;
+}
+
+.sendButton {
+    padding: 12px;
+    background-color: #F1787A;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+}
+
+.sendButton:hover {
+    background-color: #E06C6E;
+}
+
+.sendButton:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+}
+
+.loading {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+}
+
+.error {
+    text-align: center;
+    color: #dc3545;
+    padding: 10px;
+    background-color: #f8d7da;
+    border-radius: 4px;
+    margin: 10px;
+}
