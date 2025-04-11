@@ -169,7 +169,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setChatRooms(response.data.rooms);
+            setChatRooms(response.data);
         } catch (error) {
             console.error("채팅룸 목록을 가져오는 데 실패했습니다.", error);
         }
@@ -177,7 +177,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
 
     const handleRoomClick = (roomId: string) => {
         // 채팅룸 상세 페이지로 이동
-        window.location.href = `/chat/room/${roomId}`;
+        window.location.href = `/chatroom/${roomId}`;
     };
 
     const handleNextPage = () => {
