@@ -4,7 +4,6 @@ import ApiClient from '@/ApiClient';
 import type { ChatRoom as ChatRoomType, Conversation } from '@/types/chat';
 import ConversationSection from '@/components/containers/Chatroom/ConversationSection';
 import styles from '@/styles/ChatRoom.module.css';
-import { FiArrowLeft } from 'react-icons/fi';
 
 interface Message {
     id: string;
@@ -55,26 +54,20 @@ const ChatRoom = () => {
     }, []);
 
     useEffect(() => {
-        console.log('Router query id:', id);
-        const fetchChatRoom = async () => {
-            if (!id || !token) {
-                console.log('No id or token:', { id, token });
-                setLoading(false);
-                return;
-            }
+        if (!id || !token) {
+            setLoading(false);
+            return;
+        }
 
+        const fetchChatRoom = async () => {
             try {
-                console.log('Fetching chat room with id:', id);
                 const [chatRoomResponse, conversationsResponse] = await Promise.all([
                     ApiClient.get(`/chat-rooms/${id}/show`),
                     ApiClient.get(`/chat-rooms/${id}/conversations`)
                 ]);
-                console.log('Chat room response:', chatRoomResponse.data);
-                console.log('Conversations response:', conversationsResponse.data);
                 setChatRoom(chatRoomResponse.data);
                 setConversations(conversationsResponse.data);
             } catch (err) {
-                console.error('Error details:', err);
                 setError('채팅방을 불러오는 중 오류가 발생했습니다.');
             } finally {
                 setLoading(false);
