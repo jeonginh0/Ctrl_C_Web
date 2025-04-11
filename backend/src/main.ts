@@ -15,8 +15,7 @@ async function bootstrap() {
     methods: 'GET, POST, PUT, DELETE, PATCH',  // 허용할 HTTP 메소드
     allowedHeaders: 'Content-Type, Authorization',  // 허용할 헤더
   });
-  // app.enableCors();
-
+  
   // HTTP 서버 실행
   const port = process.env.PORT ?? 3000;
   await app.listen(port, () => {
