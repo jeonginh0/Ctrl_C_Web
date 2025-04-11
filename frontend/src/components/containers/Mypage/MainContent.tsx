@@ -19,9 +19,9 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
     const [userData, setUserData] = useState<UserInfo | null>(null);
     const [isEditing, setIsEditing] = useState<keyof UserInfo | null>(null);
     const [editedData, setEditedData] = useState<Partial<UserInfo>>({});
-    const [chatRooms, setChatRooms] = useState<{ id: string, name: string }[]>([]);
+    const [chatRooms, setChatRooms] = useState<{ _id: string; title: string; consultationDate: string; }[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const limit = 5; // 한 페이지에 표시할 채팅룸 수
+    const limit = 5;
 
     const baseURL = 'http://localhost:3000';
 
@@ -164,12 +164,13 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
 
     const fetchChatRooms = async (page: number, limit: number) => {
         try {
-            const response = await apiClient.get(`chat-rooms/all?page=${page}&limit=${limit}`, {
+            const response = await apiClient.get(`/chat-rooms/all?page=${page}&limit=${limit}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setChatRooms(response.data);
+            console.log('Chat rooms fetched:', response.data);
+            setChatRooms(response.data.chatRooms);
         } catch (error) {
             console.error("채팅룸 목록을 가져오는 데 실패했습니다.", error);
         }
@@ -281,9 +282,11 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                     <h1 className={styles.title}>채팅 보관</h1>
                     {chatRooms.length > 0 ? (
                         <ul className={styles.chatRoomList}>
-                            {chatRooms.map((room) => (
-                                <li key={room.id} className={styles.chatRoomItem} onClick={() => handleRoomClick(room.id)}>
-                                    <span className={styles.chatRoomName}>{room.name}</span>
+                            {chatRooms.map((room, index) => (
+                                <li key={room._id} className={styles.chatRoomItem} onClick={() => handleRoomClick(room._id)}>
+                                    <span className={styles.chatRoomNumber}>{index + 1}</span>
+                                    <span className={styles.chatRoomName}>{room.title}</span>
+                                    <span className={styles.chatRoomDate}>{room.consultationDate}</span>
                                 </li>
                             ))}
                         </ul>
