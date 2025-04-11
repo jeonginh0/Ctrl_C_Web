@@ -164,7 +164,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
 
     const fetchChatRooms = async (page: number, limit: number) => {
         try {
-            const response = await apiClient.get(`/all?page=${page}&limit=${limit}`, {
+            const response = await apiClient.get(`chat-rooms/all?page=${page}&limit=${limit}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
