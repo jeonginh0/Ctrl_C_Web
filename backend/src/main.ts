@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
+import * as express from 'express';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,7 +17,7 @@ async function bootstrap() {
     methods: 'GET, POST, PUT, DELETE, PATCH',  // 허용할 HTTP 메소드
     allowedHeaders: 'Content-Type, Authorization',  // 허용할 헤더
   });
-  
+
   // HTTP 서버 실행
   const port = process.env.PORT ?? 3000;
   await app.listen(port, () => {

@@ -11,7 +11,6 @@ import { OcrResult, OcrResultSchema } from './ocr/entity/ocr-result.schema';
 import { AnalysisModule } from './analysis/analysis.module';
 import { ChatRoomModule } from './chatroom/chatroom.module';
 import { ConversationModule } from './conversation/conversation.module';
-import { FallbackController } from './config/fallback.controller'; // 경로 맞춰줘
 
 @Module({
   imports: [
@@ -42,7 +41,6 @@ import { FallbackController } from './config/fallback.controller'; // 경로 맞
     ChatRoomModule,
     ConversationModule
   ],
-  controllers: [FallbackController],
   providers: [OcrService],
   exports: [OcrService],
 })
