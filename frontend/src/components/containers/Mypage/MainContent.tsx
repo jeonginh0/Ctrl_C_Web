@@ -19,6 +19,9 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
     const [userData, setUserData] = useState<UserInfo | null>(null);
     const [isEditing, setIsEditing] = useState<keyof UserInfo | null>(null);
     const [editedData, setEditedData] = useState<Partial<UserInfo>>({});
+    const [chatRooms, setChatRooms] = useState<{ id: string, name: string }[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const limit = 5; // 한 페이지에 표시할 채팅룸 수
 
     const baseURL = 'http://localhost:3000';
 
@@ -153,6 +156,38 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
         }
     };
 
+    useEffect(() => {
+        if (selectedMenu === "채팅 보관") {
+            fetchChatRooms(currentPage, limit);
+        }
+    }, [selectedMenu, currentPage]);
+
+    const fetchChatRooms = async (page: number, limit: number) => {
+        try {
+            const response = await apiClient.get(`/all?page=${page}&limit=${limit}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setChatRooms(response.data.rooms);
+        } catch (error) {
+            console.error("채팅룸 목록을 가져오는 데 실패했습니다.", error);
+        }
+    };
+
+    const handleRoomClick = (roomId: string) => {
+        // 채팅룸 상세 페이지로 이동
+        window.location.href = `/chat/room/${roomId}`;
+    };
+
+    const handleNextPage = () => {
+        setCurrentPage((prevPage) => prevPage + 1);
+    };
+
+    const handlePreviousPage = () => {
+        setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    };
+
     return (
         <div className={styles.mainContent}>
             {selectedMenu === "기본 정보" && userData ? (
@@ -241,12 +276,26 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                     </div>
                     <button className={styles.deleteBtn}>회원탈퇴</button>
                 </div>
-            ) : (
+            ) : selectedMenu === "채팅 보관" ? (
                 <div>
                     <h1 className={styles.title}>채팅 보관</h1>
-                    <p>저장된 채팅이 없습니다.</p>
+                    {chatRooms.length > 0 ? (
+                        <ul className={styles.chatRoomList}>
+                            {chatRooms.map((room) => (
+                                <li key={room.id} className={styles.chatRoomItem} onClick={() => handleRoomClick(room.id)}>
+                                    <span className={styles.chatRoomName}>{room.name}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>저장된 채팅룸이 없습니다.</p>
+                    )}
+                    <div>
+                        <button onClick={handlePreviousPage} disabled={currentPage === 1}>이전</button>
+                        <button onClick={handleNextPage}>다음</button>
+                    </div>
                 </div>
-            )}
+            ) : null}
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import { UseGuards, Req, Controller, Post, Body, Get, Param, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UseGuards, Req, Controller, Post, Query, Body, Delete, Get, Param, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ChatRoomService } from './chatroom.service';
 import { CreateChatRoomDto } from './dto/create-chat-room.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -34,8 +34,18 @@ export class ChatRoomController {
         return this.chatRoomService.findByUser(userId);
     }
 
-    @Get(':id')
-    async findById(@Param('id') id: string) {
-        return this.chatRoomService.findById(id);
+    @Get('all')
+    async findChatRooms(@Req() req, @Query('page') page: string, @Query('limit') limit: string,) {
+        const userId = req.user.userId;
+        const pageNumber = parseInt(page) || 1;
+        const limitNumber = parseInt(limit) || 5;
+
+        return this.chatRoomService.findAllChatRooms(userId, pageNumber, limitNumber);
+    }
+
+    @Delete(':chatRoomId/delete')
+    async deleteChatRoom(@Param('chatRoomId') chatRoomId: string, @Req() req) {
+        const userId = req.user.userId;
+        return this.chatRoomService.deleteChatRoom(userId, chatRoomId);
     }
 }
