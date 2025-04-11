@@ -248,7 +248,7 @@ const AnalysisResultMain: React.FC = () => {
         try {
             console.log('Creating chat room with analysisId:', id);
             // 채팅방 생성 API 호출
-            const response = await apiClient.post(`/chat-rooms/${id}`);
+            const response = await apiClient.post(`/chat-rooms/${id}/create`);
             console.log('Chat room creation response:', response.data);
             const chatRoomId = response.data._id;
             

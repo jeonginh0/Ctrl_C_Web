@@ -66,7 +66,7 @@ const ChatRoom = () => {
             try {
                 console.log('Fetching chat room with id:', id);
                 const [chatRoomResponse, conversationsResponse] = await Promise.all([
-                    ApiClient.get(`/chat-rooms/${id}`),
+                    ApiClient.get(`/chat-rooms/${id}/show`),
                     ApiClient.get(`/chat-rooms/${id}/conversations`)
                 ]);
                 console.log('Chat room response:', chatRoomResponse.data);
