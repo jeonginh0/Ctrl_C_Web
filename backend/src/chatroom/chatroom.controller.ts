@@ -8,7 +8,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class ChatRoomController {
     constructor(private readonly chatRoomService: ChatRoomService) {}
 
-    @Post(':analysisId')
+    @Post(':analysisId/create')
     async create(@Req() req, @Param('analysisId') analysisId?: string) {
         const userId = req.user.userId;
         return this.chatRoomService.createChatRoom(userId, analysisId);
@@ -47,5 +47,10 @@ export class ChatRoomController {
     async deleteChatRoom(@Param('chatRoomId') chatRoomId: string, @Req() req) {
         const userId = req.user.userId;
         return this.chatRoomService.deleteChatRoom(userId, chatRoomId);
+    }
+
+    @Get(':id/show')
+    async findById(@Param('id') id: string) {
+        return this.chatRoomService.findById(id);
     }
 }
