@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true, // Disable image optimization
   },
+  assetPrefix: './',  // 👈 export 시 상대경로로 설정
+  basePath: '',
 };
 
 export default nextConfig;
