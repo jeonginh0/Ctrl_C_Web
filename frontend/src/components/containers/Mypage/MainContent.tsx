@@ -23,24 +23,42 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const limit = 5;
 
-    const baseURL = 'http://localhost:3000';
+    const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 클라이언트에서만 localStorage에 접근
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const token = localStorage.getItem('token');
-            setToken(token);
+            const storedToken = localStorage.getItem('token');
+            if (!storedToken) {
+                window.location.href = '/login';
+                return;
+            }
+            setToken(storedToken);
         }
     }, []);
     
     const fetchUserData = async () => {
+        if (!token) return;
+        
         try {
-            const response = await apiClient.get("/auth/profile");
-            setUserData(response.data);
-        } catch (error) {
+            const response = await apiClient.get("/auth/profile", {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                }
+            });
+            
+            if (response.data) {
+                setUserData(response.data);
+            }
+        } catch (error: any) {
             console.error("사용자 데이터를 가져오는 데 실패했습니다.", error);
+            if (error.response?.status === 401) {
+                localStorage.clear();
+                window.location.href = '/login';
+            }
         }
     };
 
