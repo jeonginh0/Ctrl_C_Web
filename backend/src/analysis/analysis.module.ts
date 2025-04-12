@@ -13,6 +13,11 @@ import { AnalysisController } from './analysis.controller';
     ]),
   ],
   controllers: [AnalysisController],
-  providers: [AnalysisService]
+  providers: [AnalysisService],
+  exports: [
+    MongooseModule,
+    MongooseModule.forFeature([{ name: Analysis.name, schema: AnalysisSchema }]),
+    AnalysisService,
+  ],
 })
 export class AnalysisModule {}
