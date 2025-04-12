@@ -134,7 +134,7 @@ export default function ConversationSection({
                             <div className={`${styles.messageWrapper} ${styles.myMessageWrapper}`}>
                                 {userImage && (
                                     <img
-                                        src={userImage}
+                                        src={`${process.env.NEXT_PUBLIC_API_URL}${userImage}`}
                                         alt="프로필"
                                         className={styles.messageProfileImage}
                                     />
