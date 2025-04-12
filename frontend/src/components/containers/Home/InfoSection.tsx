@@ -31,7 +31,7 @@ const InfoSection: React.FC = () => {
         {
             id: 'summary',
             title: '계약서 체크리스트 확인',
-            content: '업로드한 계약서를 분석하여 체크리스트를 제공합니다.',
+            content: '업로드한 계약서를 분석하여 확인된 체크리스트를 제공합니다.',
             iconSrc: '/images/Main_service1.png',
         },
         {
@@ -43,7 +43,7 @@ const InfoSection: React.FC = () => {
         {
             id: 'compare',
             title: 'AI 챗봇 상담',
-            content: '부동산 계약과 관련된 궁금한 점을 AI 챗봇에게 질문하고 답변을 받을 수 있습니다.',
+            content: `부동산 계약과 관련된 궁금한 점을 AI 챗봇 '레디'에게 질문하고 답변을 받을 수 있습니다.`,
             iconSrc: '/images/Main_service3.png',
         },
         {
@@ -61,7 +61,7 @@ const InfoSection: React.FC = () => {
                     <ImageWrapper src="/images/talk.png" alt="Dashboard" width={600} height={600} />
                 </div>
                 <div className={styles.serviceInfo}>
-                    <h2 className={styles.serviceTitle}>CTRL+C AI</h2>
+                    <h2 className={styles.serviceTitle}>Renalyze AI</h2>
                     <div className={Accordions.accordionContainer}>
                         {accordionItems.map((item) => (
                             <Accordion 
