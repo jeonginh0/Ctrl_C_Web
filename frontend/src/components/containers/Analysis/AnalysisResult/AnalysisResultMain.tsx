@@ -8,6 +8,7 @@ import styles from '@/styles/AnalysisResultMain.module.css';
 import apiClient from '@/ApiClient';  // axios 클라이언트 import
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useAuth } from '@/contexts/AuthContext';
 
 type BoundingBox = { x: number; y: number; };
 
@@ -58,19 +59,21 @@ const AnalysisResultMain: React.FC = () => {
     const [activeTab, setActiveTab] = useState('전체 분석 내용');
     const [token, setToken] = useState<string | null>(null);
     const [highlightedBox, setHighlightedBox] = useState<Array<{ x: number; y: number }> | null>(null);
-    const [boxStyle, setBoxStyle] = useState<React.CSSProperties | null>(null);
+    const [user, setUser] = useState<any | null>(null);
     
     const tabs = [
         '전체 분석 내용',
         '계약서 체크리스트',
         '위험 요인',
-        '누락 요소'
+        '누락 요인'
     ];
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
             setToken(token);
+            setUser(user);
         }
     }, []);
 
@@ -79,7 +82,7 @@ const AnalysisResultMain: React.FC = () => {
     
         const fetchAnalysisData = async () => {
             try {
-                const response = await apiClient.get(`/analysis/${id}`, {
+                const response = await apiClient.get(`/analysis/result/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -148,7 +151,7 @@ const AnalysisResultMain: React.FC = () => {
             ),
             '계약서 체크리스트': <ContractChecklist checklist={checklistData} onHighlight={handleHighlight} />,
             '위험 요인': <RiskFactors riskFactors={analysisData?.위험요인 || null} />,
-            '누락 요소': <MissingFactors missingFactors={analysisData?.누락요소 || null} />
+            '누락 요인': <MissingFactors missingFactors={analysisData?.누락요소 || null} />
         };
 
         return components[activeTab as keyof typeof components] || null;
@@ -194,7 +197,6 @@ const AnalysisResultMain: React.FC = () => {
 
     const baseURL = 'http://localhost:3000';
 
-    // ContractChecklist에서 boundingBox를 전달받는 함수
     const handleHighlight = (boundingBox: BoundingBox[] | null) => {
         setHighlightedBox(boundingBox);
     };
@@ -233,11 +235,36 @@ const AnalysisResultMain: React.FC = () => {
         );
     };
     
+    const handleChatButtonClick = async () => {
+        console.log('Chat button clicked');
+        if (!id) {
+            console.error('No analysis ID found');
+            return;
+        }
+        if (!token) {
+            console.error('No token found');
+            return;
+        }
+        try {
+            console.log('Creating chat room with analysisId:', id);
+            // 채팅방 생성 API 호출
+            const response = await apiClient.post(`/chat-rooms/${id}/create`);
+            console.log('Chat room creation response:', response.data);
+            const chatRoomId = response.data._id;
+            
+            // 생성된 채팅방으로 이동
+            router.push(`/chatroom/${chatRoomId}`);
+        } catch (error) {
+            console.error('채팅방 생성 중 오류 발생:', error);
+            alert('채팅방 생성에 실패했습니다.');
+        }
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.logo}>
                 <Image
-                    src="/images/Sub_Header.svg"
+                    src="/images/Renalyze_Introduce.svg"
                     alt="Contract Document"
                     width={1920}
                     height={95}
@@ -280,7 +307,7 @@ const AnalysisResultMain: React.FC = () => {
                         </div>
                         <div className={styles.actionButtons}>
                             <button className={styles.downloadButton} onClick={downloadPDF}>분석 결과 다운로드</button>
-                            <button className={styles.chatbotButton}>AI 챗봇 상담</button>
+                            <button className={styles.chatbotButton} onClick={handleChatButtonClick}>AI 챗봇 상담</button>
                         </div>
                     </div>
                 </div>

@@ -30,7 +30,6 @@ const categoryNameMapping: Record<string, string> = {
 
 const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist, onHighlight }) => {
     const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-    const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
     
     // 카테고리 토글 함수
     const toggleCategory = (category: string) => {
@@ -59,7 +58,6 @@ const ContractChecklist: React.FC<ContractChecklistProps> = ({ checklist, onHigh
 
     const handleItemClick = (item: ChecklistItem) => {
         onHighlight(item.boundingBox);
-        setSelectedItemId(item._id); // 클릭한 항목의 ID 저장
     };
 
     // 존재하는 카테고리만 필터링하고 순서대로 정렬

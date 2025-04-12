@@ -1,0 +1,97 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    justify-content: center;
+    align-items: center;
+}
+
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 1400px;
+    height: 80vh;
+    margin-top: 100px;
+    border: 1px solid #EBDFDF;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+/* 채팅방 헤더 스타일 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #EBDFDF;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.headerTitle {
+    font-size: 25px;
+    font-weight: 800;
+    color: #212529;
+    margin: 0;
+}
+
+.headerProfileImage {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.headerBackButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 1200px) {
+    .chatContainer {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .chatContainer {
+        height: 90vh;
+        border-radius: 8px;
+        max-width: 95%;
+    }
+} 

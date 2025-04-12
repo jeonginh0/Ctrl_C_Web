@@ -73,7 +73,7 @@ export default function Header() {
         <header className={styles.header}>
             <div className={styles.logo}>
                 <Link href="/">
-                    <Image src="/images/CTRL_C_Logo.png" alt="CTRL+C Logo" width={105} height={57} />
+                    <Image src="/images/Renalyze_Logo.svg" alt="CTRL+C Logo" width={105} height={57} />
                 </Link>
             </div>
             <nav className={styles.nav}>
@@ -84,14 +84,6 @@ export default function Header() {
                             className={pathname === '/analysis' ? styles.active : ''}
                         >
                         계약서 분석
-                        </Link>
-                    </li>
-                    <li>
-                        <Link 
-                            href="/description"
-                            className={pathname === '/description' ? styles.active : ''}
-                        >
-                        계약 법률 설명
                         </Link>
                     </li>
                     <li>

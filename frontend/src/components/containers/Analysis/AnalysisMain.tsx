@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Modal from '@/components/common/modals/Modal';
 import { useState, useRef, useEffect, ChangeEvent, DragEvent } from 'react';
 import Button from "@/components/common/inputs/Button";
 import buttons from "@/styles/Button.module.css";
@@ -16,7 +17,7 @@ export default function AnalysisMain() {
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [error, setError] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isClient, setIsClient] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     
     const router = useRouter();
     
@@ -77,6 +78,7 @@ export default function AnalysisMain() {
     
         try {
             setUploading(true);
+            setShowModal(true);
     
             const formData = new FormData();
             
@@ -119,6 +121,7 @@ export default function AnalysisMain() {
             setError('파일 분석 중 오류가 발생했습니다.');
         } finally {
             setUploading(false);
+            setShowModal(false);
         }
     };   
 
@@ -132,8 +135,16 @@ export default function AnalysisMain() {
 
     return (
         <div className={styles.container}>
+            {showModal && (
+                <Modal>
+                    <div className={styles.modalContent}>
+                        <div className={styles.loader}></div>
+                        <p>분석 중입니다. 잠시만 기다려주세요.</p>
+                    </div>
+                </Modal>
+            )}
             <div className={styles.logo}>
-                <ImageWrapper src="/images/Sub_Header.svg" alt="Contract Document" width={1920} height={95} />
+                <ImageWrapper src="/images/Renalyze_Introduce.svg" alt="Contract Document" width={1920} height={95} />
             </div>
 
             <main className={styles.main}>
