@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -11,6 +11,9 @@ import { User, UserDocument } from './entity/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChatRoom, ChatRoomDocument } from '../chatroom/entity/chatroom.model';
+import { Conversation, ConversationDocument } from '../conversation/entity/conversation.model';
+import { OcrResult, OcrResultDocument } from '../ocr/entity/ocr-result.schema';
 
 const uploadDir = path.join(process.cwd(), '/uploads');
 
@@ -39,7 +42,12 @@ export class AuthService {
   private readonly emailVerificationCodes = new Map<string, string>();
   private readonly verifiedEmails = new Set<string>();
 
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(ChatRoom.name) private chatRoomModel: Model<ChatRoomDocument>,
+    @InjectModel(Conversation.name) private conversationModel: Model<ConversationDocument>,
+    @InjectModel(OcrResult.name) private ocrResultModel: Model<OcrResultDocument>,
+  ) {}
 
   // 이메일 인증번호 전송
   private async sendVerificationCode(email: string, code: string): Promise<void> {
@@ -54,7 +62,7 @@ export class AuthService {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '[CTRL+C] 이메일 인증 코드',
+      subject: '[Renalyze] 이메일 인증 코드',
       text: `인증 코드는: ${code}`,
     };
     
@@ -196,16 +204,61 @@ export class AuthService {
     return { updatedUser, token };  // 반환 타입 수정
   }
   
-  // 회원탈퇴
-  async deleteUser(email: string): Promise<{ message: string }> {
-    const user = await this.userModel.findOne({ email }).exec();
-    
+  // 비밀번호 찾기
+  async findPassword(email: string, name: string) {
+    const user = await this.userModel.findOne({ email, name }).exec();
     if (!user) {
-      throw new HttpException('사용자를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+        throw new NotFoundException('일치하는 사용자 정보를 찾을 수 없습니다.');
     }
-  
+
+    const temporaryPassword = Math.random().toString(36).slice(-8);
+
+    const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
+
+    await this.userModel.updateOne(
+        { email },
+        { $set: { password: hashedPassword } }
+    ).exec();
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_APP_PASSWORD
+        }
+    });
+
+    await transporter.sendMail({
+        from: process.env.GMAIL_USER,
+        to: email,
+        subject: '[Renalyze] 임시 비밀번호 발급',
+        text: `
+            안녕하세요,
+            
+            임시 비밀번호가 발급되었습니다.
+            임시 비밀번호: ${temporaryPassword}
+            
+            보안을 위해 로그인 후 반드시 비밀번호를 변경해주세요.
+        `
+    });
+
+    return {
+        message: '임시 비밀번호가 이메일로 전송되었습니다.'
+    };
+  }
+
+  // 회원탈퇴
+  async deleteAccount(email: string) {
+    const user = await this.userModel.findOne({ email }).exec();
+    if (!user) {
+        throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    await this.chatRoomModel.deleteMany({ userId: user._id }).exec();
+    await this.conversationModel.deleteMany({ userId: user._id }).exec();
+
+    await this.ocrResultModel.deleteMany({ userId: user._id }).exec();
+
     await this.userModel.deleteOne({ email }).exec();
-    
-    return { message: '회원탈퇴가 완료되었습니다.' };
   }
 }

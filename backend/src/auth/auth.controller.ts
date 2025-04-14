@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Patch, Delete, UseGuards, Request, UseInterceptors, UploadedFile, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, Patch, Delete, UseGuards, Request, UseInterceptors, UploadedFile, Param, Req } from '@nestjs/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -75,9 +75,19 @@ export class AuthController {
     return { message: '프로필이 성공적으로 업데이트되었습니다.', updatedUser };
   }
 
+  @Post('find-password')
+  async findPassword(
+      @Body('email') email: string,
+      @Body('name') name: string,
+  ) {
+      return this.authService.findPassword(email, name);
+  }
+
   // 회원탈퇴
-  @Delete('delete/:email')
-  async deleteUser(@Param('email') email: string): Promise<{ message: string }> {
-    return this.authService.deleteUser(email);
+  @Delete('delete')
+  @UseGuards(JwtAuthGuard)
+  async deleteAccount(@Req() req) {
+      const email = req.user.email;
+      return this.authService.deleteAccount(email);
   }
 }
