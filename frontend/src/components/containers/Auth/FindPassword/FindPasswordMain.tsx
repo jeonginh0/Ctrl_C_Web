@@ -9,7 +9,7 @@ import ApiClient from "@/ApiClient";
 import Modal from "@/components/common/modals/Modal";
 
 export default function FindPasswordMain() {
-    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -18,15 +18,27 @@ export default function FindPasswordMain() {
     const handleFindPassword = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            console.log('비밀번호 찾기 요청 데이터:', { name, email });
+
             const response = await ApiClient.post("/auth/find-password", {
-                name,
+                username,
                 email,
             });
 
+            console.log('비밀번호 찾기 응답:', response.data);
             setIsSuccess(true);
             setShowModal(true);
-        } catch (error) {
-            console.error("비밀번호 찾기 실패", error);
+        } catch (error: any) {
+            console.error('비밀번호 찾기 에러 상세:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status,
+                config: {
+                    url: error.config?.url,
+                    method: error.config?.method,
+                    data: error.config?.data,
+                }
+            });
             setIsSuccess(false);
             setShowModal(true);
         }
@@ -49,8 +61,8 @@ export default function FindPasswordMain() {
                     <div className={styles.inputGroup}>
                         <input
                             type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             className={styles.input}
                             placeholder="이름"
                             required
