@@ -205,8 +205,8 @@ export class AuthService {
   }
   
   // 비밀번호 찾기
-  async findPassword(email: string, name: string) {
-    const user = await this.userModel.findOne({ email, name }).exec();
+  async findPassword(email: string, username: string) {
+    const user = await this.userModel.findOne({ email, username }).exec();
     if (!user) {
         throw new NotFoundException('일치하는 사용자 정보를 찾을 수 없습니다.');
     }

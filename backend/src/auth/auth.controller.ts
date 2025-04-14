@@ -78,9 +78,9 @@ export class AuthController {
   @Post('find-password')
   async findPassword(
       @Body('email') email: string,
-      @Body('name') name: string,
+      @Body('username') username: string,
   ) {
-      return this.authService.findPassword(email, name);
+      return this.authService.findPassword(email, username);
   }
 
   // 회원탈퇴
