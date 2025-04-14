@@ -2,9 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
-import * as express from 'express';
-import { join } from 'path';
-import * as fs from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

@@ -100,7 +100,7 @@ export class ChatRoomService {
             throw new NotFoundException('채팅방을 찾을 수 없습니다.');
         }
     
-        if (chatRoom.userId.toString() !== userId) {
+        if (chatRoom.userId.toString() !== userId.toString()) {
             throw new ForbiddenException('해당 채팅방을 삭제할 권한이 없습니다.');
         }
     
