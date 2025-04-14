@@ -20,6 +20,12 @@
     border: 0.5px solid #ddd; /* 외곽선 추가 */
     width: 600px;
 }
+
+.chatCard {
+    padding: 0;
+    border: 0.5px solid #ddd;
+    width: 600px;
+}
   
 .profileSection {
     display: flex;
@@ -81,6 +87,10 @@
   cursor: pointer;
 }
 
+.chatRoomSection {
+    padding: 0px 0;
+}
+
 .chatRoomList {
     list-style: none;
     padding: 0;
@@ -88,35 +98,120 @@
 }
 
 .chatRoomItem {
-    background: #ffffff; 
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    padding: 15px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 80px 1fr 120px 40px;
+    padding: 20px 32px;
+    border-bottom: 1px solid #EAEAEA;
     align-items: center;
-    cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .chatRoomItem:hover {
-    background: #f0f0f0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #F8F8F8;
+}
+
+.chatRoomInfo {
+    display: flex;
+    align-items: center;
+    gap: 40px;
 }
 
 .chatRoomNumber {
-    width: 30px;
-    display: inline-block;
-    text-align: center;
+    color: #666666;
+    font-size: 16px;
 }
 
 .chatRoomName {
-    flex: 1;
-    margin-left: 10px;
+    color: #333333;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
 }
 
 .chatRoomDate {
-    margin-left: 20px;
-    color: #666;
+    color: #666666;
+    font-size: 14px;
+    text-align: right;
+}
+
+.noChatRoom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #666666;
+    font-size: 16px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+    padding: 20px 0;
+}
+
+.pageButton {
+    padding: 8px 24px;
+    border: 1px solid #EAEAEA;
+    border-radius: 4px;
+    background-color: white;
+    color: #333333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pageButton:hover {
+    background-color: #F8F8F8;
+}
+
+.pageButton.disabled {
+    background-color: #F8F8F8;
+    color: #CCCCCC;
+    cursor: not-allowed;
+}
+
+.chatRoomHeader {
+    display: grid;
+    grid-template-columns: 80px 1fr 120px 40px;
+    padding: 10px 23px;
+    border-bottom: 0.5px solid #ddd;
+}
+
+.headerNumber {
+    color: #333333;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.headerTitle {
+    color: #333333;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.headerDate {
+    color: #333333;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.deleteButton {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    align-items: center;
+    width: 100%;
+}
+
+.deleteButton:hover {
+    opacity: 0.7;
 }

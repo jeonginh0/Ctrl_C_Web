@@ -27,6 +27,8 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
 
     // 클라이언트에서만 localStorage에 접근
     const [token, setToken] = useState<string | null>(null);
+    const [hoveredId, setHoveredId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -207,6 +209,36 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
         setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
 
+    // 채팅룸 삭제 함수 추가
+    const handleDeleteChatRoom = async (chatRoomId: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        
+        if (isDeleting) return;
+        
+        console.log('Attempting to delete chatRoom with ID:', chatRoomId); // 삭제하려는 채팅룸 ID 확인
+        
+        if (window.confirm('정말로 이 채팅방을 삭제하시겠습니까?')) {
+            try {
+                setIsDeleting(true);
+                const response = await apiClient.delete(`/chat-rooms/${chatRoomId}/delete`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                console.log('Delete response:', response); // 삭제 응답 확인
+                
+                // 삭제 후 채팅방 목록 새로고침
+                fetchChatRooms(currentPage, limit);
+                
+            } catch (error) {
+                console.error("채팅방 삭제 중 오류 발생:", error);
+                alert('채팅방 삭제에 실패했습니다.');
+            } finally {
+                setIsDeleting(false);
+            }
+        }
+    };
+
     return (
         <div className={styles.mainContent}>
             {selectedMenu === "기본 정보" && userData ? (
@@ -298,22 +330,73 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
             ) : selectedMenu === "채팅 보관" ? (
                 <div>
                     <h1 className={styles.title}>채팅 보관</h1>
-                    {chatRooms.length > 0 ? (
-                        <ul className={styles.chatRoomList}>
-                            {chatRooms.map((room, index) => (
-                                <li key={room._id} className={styles.chatRoomItem} onClick={() => handleRoomClick(room._id)}>
-                                    <span className={styles.chatRoomNumber}>{index + 1}</span>
-                                    <span className={styles.chatRoomName}>{room.title}</span>
-                                    <span className={styles.chatRoomDate}>{room.consultationDate}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>저장된 채팅룸이 없습니다.</p>
-                    )}
-                    <div>
-                        <button onClick={handlePreviousPage} disabled={currentPage === 1}>이전</button>
-                        <button onClick={handleNextPage}>다음</button>
+                    <p className={styles.subtitle}>
+                        CTRL + C 서비스에서 진행한 상담 내역을 확인할 수 있습니다.
+                    </p>
+                    <div className={styles.chatCard}>
+                        <div className={styles.chatRoomSection}>
+                            {chatRooms.length > 0 ? (
+                                <>
+                                    <div className={styles.chatRoomHeader}>
+                                        <span className={styles.headerNumber}>번호</span>
+                                        <span className={styles.headerTitle}>제목</span>
+                                        <span className={styles.headerDate}>상담 날짜</span>
+                                        <span className={styles.headerAction}></span>
+                                    </div>
+                                    <ul className={styles.chatRoomList}>
+                                        {chatRooms.map((room, index) => (
+                                            <li key={room._id} className={styles.chatRoomItem}>
+                                                <span className={styles.chatRoomNumber}>
+                                                    {(currentPage - 1) * limit + index + 1}
+                                                </span>
+                                                <span 
+                                                    className={styles.chatRoomName}
+                                                    onClick={() => handleRoomClick(room._id)}
+                                                >
+                                                    {room.title}
+                                                </span>
+                                                <span className={styles.chatRoomDate}>
+                                                    {room.consultationDate}
+                                                </span>
+                                                <button 
+                                                    className={styles.deleteButton}
+                                                    onClick={(e) => handleDeleteChatRoom(room._id, e)}
+                                                    onMouseEnter={() => setHoveredId(room._id)}
+                                                    onMouseLeave={() => setHoveredId(null)}
+                                                    disabled={isDeleting}
+                                                >
+                                                    <ImageWrapper
+                                                        src={hoveredId === room._id ? "/icons/Delete-hover.svg" : "/icons/Delete.svg"}
+                                                        alt="delete"
+                                                        width={20}
+                                                        height={20}
+                                                    />
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            ) : (
+                                <div className={styles.noChatRoom}>
+                                    <p>저장된 채팅룸이 없습니다.</p>
+                                </div>
+                            )}
+                        </div>
+                        <div className={styles.pagination}>
+                            <button 
+                                className={`${styles.pageButton} ${currentPage === 1 ? styles.disabled : ''}`}
+                                onClick={handlePreviousPage} 
+                                disabled={currentPage === 1}
+                            >
+                                이전
+                            </button>
+                            <button 
+                                className={styles.pageButton}
+                                onClick={handleNextPage}
+                            >
+                                다음
+                            </button>
+                        </div>
                     </div>
                 </div>
             ) : null}
