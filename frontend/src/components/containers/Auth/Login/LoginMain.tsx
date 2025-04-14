@@ -57,7 +57,7 @@ export default function LoginMain() {
         <div className={styles.container}>
             <div className={styles.card}>
                 <h2 className={styles.title}>
-                    CTRL + C 서비스 계정으로
+                    Renalyze 서비스 계정으로
                 </h2>
                 <p className={styles.subTitle}>
                     서비스를 이용하세요.

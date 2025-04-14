@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import styles from "@/styles/MainContent.module.css";
 import ImageWrapper from "@/components/common/inputs/ImageWrapper";
 import apiClient from '../../../ApiClient';
+import Modal from "@/components/common/modals/Modal";
+import Button from "@/components/common/inputs/Button"
+import buttons from "@/styles/Button.module.css";
 
 interface MainContentProps {
     selectedMenu: string;
@@ -21,6 +24,8 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
     const [editedData, setEditedData] = useState<Partial<UserInfo>>({});
     const [chatRooms, setChatRooms] = useState<{ _id: string; title: string; consultationDate: string; }[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
     const limit = 5;
 
     const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -114,7 +119,10 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
     
                 fetchUserData();
                 setIsEditing(null);
-    
+
+                const fieldName = isEditing === "username" ? "이름" : "비밀번호";
+                setModalMessage(`${fieldName} 변경 완료.`);
+                setShowModal(true);
             } catch (error) {
                 console.error("사용자 정보 업데이트 실패:", error);
             }
@@ -429,6 +437,19 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                     </div>
                 </div>
             ) : null}
+            {showModal && (
+                <Modal>
+                    <div className={styles.modalContent}>
+                        <p>{modalMessage}</p>
+                        <Button 
+                            onClick={() => setShowModal(false)} 
+                            className={buttons.confirmButton}
+                        >
+                            확인
+                        </Button> 
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };

@@ -141,7 +141,7 @@ const SignupMain = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              placeholder="예) 정컨씨"
+              placeholder="예) 정레디"
               className={errors.username ? styles.inputError : ''}
             />
             {errors.username && <p className={styles.errorText}>{errors.username}</p>}
@@ -156,7 +156,7 @@ const SignupMain = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="예) ctrl+c@ctrlc.co.kr"
+                placeholder="예) renalyze@renalyze.com"
                 className={errors.email ? styles.inputError : ''}
               />
               <button
