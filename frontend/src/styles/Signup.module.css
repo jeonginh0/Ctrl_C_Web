@@ -134,16 +134,19 @@
 
 .modalContent {
     text-align: center;
+    background-color: white;
     padding: 20px;
+    border-radius: 8px;
 }
 
 .modalContent p {
-    margin-bottom: 20px;
-    font-size: 16px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    font-size: 20px;
 }
 
 .successText {
-    color: #4CAF50;
+    color: #086ef3;
 }
 
 .errorText {

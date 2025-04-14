@@ -72,11 +72,11 @@ const SignupMain = () => {
 
       setVerificationSent(true);
       setErrors({ ...errors, email: undefined });
-      setModalMessage('인증 코드가 이메일로 전송되었습니다.');
+      setModalMessage('인증번호가 이메일로 전송되었습니다.');
       setIsSuccess(true);
       setShowModal(true);
     } catch (error) {
-      setModalMessage('인증 코드 전송에 실패했습니다.');
+      setModalMessage('인증번호 전송에 실패했습니다.');
       setIsSuccess(false);
       setShowModal(true);
     }
@@ -92,7 +92,7 @@ const SignupMain = () => {
 
       if (response.status === 200 || response.status === 201) {
         setIsVerified(true);
-        setModalMessage('인증이 성공적으로 완료되었습니다!');
+        setModalMessage('인증 완료.');
         setIsSuccess(true);
         setShowModal(true);
       } else {
