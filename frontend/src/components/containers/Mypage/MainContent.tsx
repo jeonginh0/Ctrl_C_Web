@@ -79,7 +79,10 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
 
     const handleEditClick = async (field: keyof UserInfo) => {
         setIsEditing(field);
-        setEditedData({ ...editedData, [field]: userData?.[field] });
+        setEditedData({ 
+            ...editedData, 
+            [field]: field === "password" ? "" : userData?.[field] 
+        });
     };
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -239,6 +242,31 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
         }
     };
 
+    // useEffect 수정
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            // 입력 필드나 수정 아이콘을 클릭한 경우는 제외
+            if (!target.closest('input') && 
+                !target.closest('.editimage') && 
+                isEditing) {
+                setIsEditing(null);
+                // 편집 중이던 데이터를 원래 데이터로 복원
+                setEditedData(prev => ({
+                    ...prev,
+                    username: userData?.username || '',
+                    password: '',  // 비밀번호는 빈 문자열로
+                    email: userData?.email || ''
+                }));
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isEditing, userData]);
+
     return (
         <div className={styles.mainContent}>
             {selectedMenu === "기본 정보" && userData ? (
@@ -300,6 +328,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                             {isEditing === "password" ? (
                             <input
                                 type="password"
+                                placeholder="새 비밀번호"
                                 value={editedData.password || ""}
                                 onChange={handleChange}
                                 onKeyPress={handleKeyPress}
@@ -307,7 +336,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                             />
                             ) : (
                             <>
-                                {"*******"}
+                                {"•••••••"}
                                 <ImageWrapper
                                 src="/icons/Edit-Icon.svg"
                                 alt="password edit"
