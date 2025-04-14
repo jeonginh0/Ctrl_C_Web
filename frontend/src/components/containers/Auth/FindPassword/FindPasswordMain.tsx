@@ -5,32 +5,37 @@ import Button from "@/components/common/inputs/Button";
 import buttons from "@/styles/Button.module.css";
 import React from "react";
 import Link from "next/link";
+import ApiClient from "@/ApiClient";
+import Modal from "@/components/common/modals/Modal";
 
 export default function FindPasswordMain() {
-    const [username, setUsername] = useState("");
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const router = useRouter();
 
     const handleFindPassword = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:3000/api/find-password", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username, email }),
+            const response = await ApiClient.post("/auth/find-password", {
+                name,
+                email,
             });
-        
-            if (!response.ok) {
-                throw new Error("비밀번호 찾기 실패");
-            }
-        
-            const data = await response.json();
-            console.log("비밀번호 생성, 이메일로 비밀번호 전송", data);
-            router.push("/login");
+
+            setIsSuccess(true);
+            setShowModal(true);
         } catch (error) {
             console.error("비밀번호 찾기 실패", error);
+            setIsSuccess(false);
+            setShowModal(true);
+        }
+    };
+
+    const handleModalClose = () => {
+        setShowModal(false);
+        if (isSuccess) {
+            router.push("/login");
         }
     };
 
@@ -43,30 +48,53 @@ export default function FindPasswordMain() {
                 <form onSubmit={handleFindPassword}>
                     <div className={styles.inputGroup}>
                         <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className={styles.input}
-                        placeholder="이름"
-                        required
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className={styles.input}
+                            placeholder="이름"
+                            required
                         />
                     </div>
                     <div className={styles.inputGroup}>
                         <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className={styles.input}
-                        placeholder="이메일"
-                        required
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={styles.input}
+                            placeholder="이메일"
+                            required
                         />
                     </div>
-                    <Button type="submit" className={buttons.loginClickButton}>비밀번호 찾기</Button>
+                    <Button type="submit" className={buttons.loginClickButton}>
+                        비밀번호 찾기
+                    </Button>
                 </form>
                 <div className={styles.linkContainer}>
-                <Link href="/login" className={styles.findlink}>로그인</Link>
+                    <Link href="/login" className={styles.findlink}>
+                        로그인
+                    </Link>
                 </div>
             </div>
+
+            {showModal && (
+                <Modal>
+                    <div className={styles.modalContent}>
+                        <h3>{isSuccess ? "비밀번호 찾기 완료" : "비밀번호 찾기 실패"}</h3>
+                        <p>
+                            {isSuccess 
+                                ? "임시 비밀번호가 이메일로 전송되었습니다." 
+                                : "이름과 이메일을 확인해주세요."}
+                        </p>
+                        <Button 
+                            onClick={handleModalClose}
+                            className={buttons.confirmButton}
+                        >
+                            확인
+                        </Button>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 }
