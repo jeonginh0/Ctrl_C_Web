@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import SuccessMessage from '@/components/common/messages/SuccessMessage';
 import styles from '@/styles/Signup.module.css';
 import apiClient from '../../../../ApiClient';
+import Modal from '@/components/common/modals/Modal';
+import Button from '@/components/common/inputs/Button';
+import buttons from '@/styles/Button.module.css';
 
 // 폼 데이터 인터페이스 정의
 interface FormData {
@@ -33,7 +35,9 @@ const SignupMain = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [verificationSent, setVerificationSent] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   // 폼 입력값 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +49,13 @@ const SignupMain = () => {
   const validateEmail = (email: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    if (isSuccess && modalMessage === '회원가입이 성공적으로 완료되었습니다!') {
+      window.location.href = '/login';
+    }
   };
 
   // 인증번호 요청
@@ -61,9 +72,13 @@ const SignupMain = () => {
 
       setVerificationSent(true);
       setErrors({ ...errors, email: undefined });
-      setSuccessMessage('인증 코드가 이메일로 전송되었습니다.');
+      setModalMessage('인증 코드가 이메일로 전송되었습니다.');
+      setIsSuccess(true);
+      setShowModal(true);
     } catch (error) {
-      alert('인증 코드 전송에 실패했습니다.');
+      setModalMessage('인증 코드 전송에 실패했습니다.');
+      setIsSuccess(false);
+      setShowModal(true);
     }
   };
 
@@ -77,12 +92,17 @@ const SignupMain = () => {
 
       if (response.status === 200 || response.status === 201) {
         setIsVerified(true);
-        setSuccessMessage('인증 성공!');
+        setModalMessage('인증이 성공적으로 완료되었습니다!');
+        setIsSuccess(true);
+        setShowModal(true);
       } else {
         throw new Error('잘못된 인증번호입니다.');
       }
     } catch (error) {
       setErrors({ ...errors, verificationCode: '잘못된 인증번호입니다.' });
+      setModalMessage('잘못된 인증번호입니다.');
+      setIsSuccess(false);
+      setShowModal(true);
     }
   };
 
@@ -106,11 +126,12 @@ const SignupMain = () => {
     }
 
     if (!isVerified) {
-      alert('이메일 인증을 완료해주세요.');
+      setModalMessage('이메일 인증을 완료해주세요.');
+      setIsSuccess(false);
+      setShowModal(true);
       return;
     }
 
-    // 회원가입 API 요청
     try {
       const response = await apiClient.post('/auth/register', {
         username: formData.username,
@@ -119,11 +140,13 @@ const SignupMain = () => {
         verificationCode: formData.verificationCode,
       });
 
-      setSuccessMessage(response.data.message);
-      // 성공 시 로그인 페이지로 이동
-      window.location.href = '/login';
+      setModalMessage('회원가입이 성공적으로 완료되었습니다!');
+      setIsSuccess(true);
+      setShowModal(true);
     } catch (error) {
-      alert('회원가입에 실패했습니다.');
+      setModalMessage('회원가입에 실패했습니다.');
+      setIsSuccess(false);
+      setShowModal(true);
     }
   };
 
@@ -168,9 +191,6 @@ const SignupMain = () => {
               </button>
             </div>
             {errors.email && <p className={styles.errorText}>{errors.email}</p>}
-            {successMessage && !verificationSent && (
-              <SuccessMessage message={successMessage} />
-            )}
           </div>
 
           {verificationSent && (
@@ -195,9 +215,6 @@ const SignupMain = () => {
               </div>
               {errors.verificationCode && (
                 <p className={styles.errorText}>{errors.verificationCode}</p>
-              )}
-              {successMessage && verificationSent && (
-                <SuccessMessage message={successMessage} />
               )}
             </div>
           )}
@@ -236,6 +253,22 @@ const SignupMain = () => {
             회원가입
           </button>
         </form>
+
+        {showModal && (
+          <Modal>
+            <div className={styles.modalContent}>
+              <p className={isSuccess ? styles.successText : styles.errorText}>
+                {modalMessage}
+              </p>
+              <Button 
+                onClick={handleCloseModal} 
+                className={isSuccess ? buttons.confirmButton : buttons.cancelButton}
+              >
+                확인
+              </Button>
+            </div>
+          </Modal>
+        )}
       </div>
     </div>
   );

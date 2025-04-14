@@ -25,6 +25,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
     const [chatRooms, setChatRooms] = useState<{ _id: string; title: string; consultationDate: string; }[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [showModal, setShowModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
     const limit = 5;
 
@@ -275,6 +276,26 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
         };
     }, [isEditing, userData]);
 
+    const handleDeleteAccount = async () => {
+        try {
+            await apiClient.delete("/auth/delete", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            
+            // 로컬 스토리지 초기화
+            localStorage.clear();
+            
+            // 메인 페이지로 이동
+            window.location.href = '/';
+        } catch (error) {
+            console.error("회원탈퇴 실패:", error);
+            setModalMessage("회원탈퇴에 실패했습니다.");
+            setShowModal(true);
+        }
+    };
+
     return (
         <div className={styles.mainContent}>
             {selectedMenu === "기본 정보" && userData ? (
@@ -362,7 +383,12 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                             <span>{formatDate(new Date(userData.createAt))}</span> {/* 가입일 데이터 */}
                         </div>
                     </div>
-                    <button className={styles.deleteBtn}>회원탈퇴</button>
+                    <button 
+                        className={styles.deleteBtn}
+                        onClick={() => setShowDeleteModal(true)}
+                    >
+                        회원탈퇴
+                    </button>
                 </div>
             ) : selectedMenu === "채팅 보관" ? (
                 <div>
@@ -447,6 +473,28 @@ const MainContent: React.FC<MainContentProps> = ({ selectedMenu }) => {
                         >
                             확인
                         </Button> 
+                    </div>
+                </Modal>
+            )}
+            {showDeleteModal && (
+                <Modal>
+                    <div className={styles.modalContent}>
+                        <h3>정말로 탈퇴 하시겠습니까?</h3>
+                        <p>모든 데이터가 삭제되며 복구할 수 없습니다.</p>
+                        <div className={styles.modalButtons}>
+                            <Button 
+                                onClick={handleDeleteAccount} 
+                                className={buttons.deleteButton}
+                            >
+                                확인
+                            </Button>
+                            <Button 
+                                onClick={() => setShowDeleteModal(false)} 
+                                className={buttons.cancelButton}
+                            >
+                                취소
+                            </Button>
+                        </div>
                     </div>
                 </Modal>
             )}
