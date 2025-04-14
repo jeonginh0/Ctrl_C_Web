@@ -38,10 +38,10 @@ services:
       - GPT_API_KEY=${GPT_API_KEY}
       - OPENAI_ASSISTANT_ID=${OPENAI_ASSISTANT_ID}
     volumes:
-      - ./backend:/app
-      - /app/node_modules
-      - /app/dist
-      - uploads:/app/uploads
+      - ./backend:/src
+      - /src/node_modules
+      - /src/dist
+      - ./backend/uploads:/uploads
     networks:
       - app-network
     restart: unless-stopped
