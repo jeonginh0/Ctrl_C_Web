@@ -50,7 +50,12 @@ export default function ConversationSection({
     };
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messagesEndRef.current) {
+            const messageList = messagesEndRef.current.parentElement;
+            if (messageList) {
+                messageList.scrollTop = messageList.scrollHeight;
+            }
+        }
     };
 
     const loadMessages = async () => {
@@ -87,7 +92,12 @@ export default function ConversationSection({
     }, [chatRoomId]);
 
     useEffect(() => {
-        scrollToBottom();
+        if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            if (lastMessage.gptResponse === '레디가 생각 중입니다...') {
+                scrollToBottom();
+            }
+        }
     }, [messages]);
 
     const handleSendMessage = async () => {

@@ -3,13 +3,14 @@
     flex-direction: column;
     height: 100%;
     background-color: #ffffff;
+    position: relative;
 }
 
 .messageList {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
-    padding-bottom: 60px;
+    padding-bottom: 150px;
     display: flex;
     flex-direction: column;
     gap: 16px;
