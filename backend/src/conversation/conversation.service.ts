@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Conversation, ConversationDocument } from './entity/conversation.model';
 import { OpenAI } from 'openai';
-import { chatbotPrompt } from './textContent';
+import { chatbotPrompt } from '../textContent';
 import { Analysis, AnalysisDocument } from '../analysis/entity/analysis.schema';
 import { ChatRoom, ChatRoomDocument } from 'src/chatroom/entity/chatroom.model';
 
