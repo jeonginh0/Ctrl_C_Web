@@ -1,0 +1,122 @@
+.mainContent {
+    background-color: white;
+    padding-top: 180px; /* 헤더 높이 고려 */
+}
+  
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+  
+.subtitle {
+    color: #666;
+    margin-bottom: 30px;
+}
+  
+.card {
+    background: white;
+    padding: 20px;
+    border: 0.5px solid #ddd; /* 외곽선 추가 */
+    width: 600px;
+}
+  
+.profileSection {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    color: #828282;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+    /* margin-bottom: 15px; */
+}
+  
+.profileImage {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+  
+.infoRow {
+    display: flex;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    padding: 30px 0;
+    font-size: 16px;
+    color: #828282;
+    border-bottom: 1px solid #ddd;
+}
+  
+.infoRow:last-child {
+    border-bottom: none;
+}
+  
+.infoRow p {
+    width: 225px; /* 첫 번째 항목의 고정 너비 설정 */
+}
+
+.infoRow span {
+    flex: 1; /* 나머지 공간을 차지하도록 설정 */
+    text-align: left; /* 왼쪽 정렬 */
+    padding-left: 10px; /* 첫 글자 위치 맞추기 위한 여백 */
+}
+  
+.deleteBtn {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.deleteBtn:hover {
+    background-color: #e60000;
+}
+  
+.editimage {
+  cursor: pointer;
+}
+
+.chatRoomList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chatRoomItem {
+    background: #ffffff; 
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chatRoomItem:hover {
+    background: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chatRoomNumber {
+    width: 30px;
+    display: inline-block;
+    text-align: center;
+}
+
+.chatRoomName {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.chatRoomDate {
+    margin-left: 20px;
+    color: #666;
+}

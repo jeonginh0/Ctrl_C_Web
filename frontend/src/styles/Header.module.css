@@ -1,0 +1,132 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100% ;
+    padding: 1rem 5%;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.nav ul {
+    display: flex;
+    list-style: none;
+    margin-right: 0;
+    padding: 0;
+}
+
+.nav li {
+    margin-left: 2rem;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 800;
+    font-size: 17px;
+    transition: color 0.2s;
+}
+
+.nav a:hover {
+    color: #4a154b;
+}
+
+.active {
+    color: #CD0000 !important;
+    font-weight: bold;
+}
+
+.userSection {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profileWrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.profileImage {
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background: transparent;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 0;
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #E02424;
+    overflow: hidden;
+}
+
+.dropdownItem {
+    padding: 10px 15px;
+    background-color: #ffffff;
+    text-decoration: none;
+    color: #F05252;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease-in-out;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdownItem:hover {
+    color: #ffffff;
+    background-color: #E02424;
+}
+
+.dropdownItem a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.dropdownText {
+    font-size: 14px;
+}
+
+.dropdownItem:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .nav ul {
+        gap: 1rem;
+    }
+  
+    .nav li {
+        margin-left: 1rem;
+    }
+}

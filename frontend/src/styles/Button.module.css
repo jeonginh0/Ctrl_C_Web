@@ -1,0 +1,154 @@
+.button {
+    background-color: #f05252;
+    color: white;
+    border: none;
+    padding: 0.75rem 3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #e02424;
+}
+
+.loginButton {
+    margin-left: auto;  
+    background-color: transparent;
+    color: #f05252;
+    text-decoration: none;
+    border: 1px solid #f05252;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.loginButton a {
+    text-decoration: none;
+    color: #f05252;
+    font-weight: 800;
+    font-size: 17px;
+    transition: color 0.2s;
+}
+
+.loginButton:hover {
+    background-color: rgba(250, 143, 128, 0.05);
+}
+
+.browseButton {
+    background-color: transparent;
+    color: #f05252;
+    border: 1px solid #f05252;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.browseButton:hover {
+    background-color: rgba(250, 143, 128, 0.05);
+}
+
+.uploadButton {
+    background-color: #f05252;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.uploadButton:hover {
+    background-color: #f78686;
+}
+
+.uploadButton:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.loginClickButton {
+    margin-top: 15px;
+    margin-bottom: 30px;
+    width: 100%;
+    padding: 10px;
+    background: #f05252;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.loginClickButton:hover {
+    background: #e02424;
+}
+
+.findPasswordButton {
+    margin-top: 15px;
+    margin-bottom: 30px;
+    width: 100%;
+    padding: 10px;
+    background: #f05252;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.findPasswordButton:hover {
+    background: #e02424;
+}
+
+.goToLoginPage {
+    margin-top: 30px;
+    background-color: #f05252;
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.goToLoginPage:hover {
+    background: #e02424;
+}
+
+.sendAuthButton {
+    background-color: #008CBA; 
+    font-size: 12px;
+    padding: 8px 16px;
+    margin-left: 10px;
+}
+  
+.sendAuthButton:hover {
+    background-color: #007B9E;
+}
+
+@media (max-width: 1024px) {
+    .button {
+        padding: 0.75rem 2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .button {
+        padding: 0.75rem 2rem;
+        font-size: 0.9rem;
+    }
+}
